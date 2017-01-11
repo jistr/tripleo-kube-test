@@ -18,9 +18,9 @@ spec:
           name: mysql 
         volumeMounts:
         - name: kolla-config 
-          mountPath: /var/lib/kolla
+          mountPath: /var/lib/kolla/config_files/
         - name: mysql-config 
-          mountPath: /etc
+          mountPath: /etc/mysql/
         - name: mysql-persistent-storage 
           mountPath: /var/lib/mysql
       volumes:

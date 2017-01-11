@@ -17,9 +17,25 @@ spec:
         - containerPort: 3306
           name: mysql 
         volumeMounts:
+        - name: kolla-config 
+          mountPath: /var/lib/kolla
+        - name: mysql-config 
+          mountPath: /etc
         - name: mysql-persistent-storage 
           mountPath: /var/lib/mysql
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pv-claim
+        - name: kolla-config
+          configMap:
+            name: mariadb-kolla-config
+            items:
+            - key: kolla-config
+              path: config.json
+        - name: mysql-config 
+          configMap:
+            name: mariadb-kolla-config
+            items:
+            - key: my-cnf 
+              path: my.cnf

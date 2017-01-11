@@ -8,6 +8,6 @@ metadata:
 data:
   kolla-config: |
     {
-      "command": "sleep 60",
+      "command": "rabbitmq-server",
       "config_files": []
     }

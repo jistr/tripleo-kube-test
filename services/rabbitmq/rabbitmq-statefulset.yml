@@ -12,8 +12,21 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-      - name: rabbitmq
-        image: index.docker.io/tripleoupstream/centos-binary-rabbitmq:latest
-        ports:
-        - containerPort: 5672
-          name: rabbitmq
+        - name: rabbitmq
+          image: tripleoupstream/centos-binary-rabbitmq:latest
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          ports:
+            - containerPort: 5672
+              name: rabbitmq
+          volumeMounts:
+            - name: rabbitmq-kolla-config
+              mountPath: /var/lib/kolla/config_files
+      volumes:
+        - name: rabbitmq-kolla-config
+          configMap:
+            name: rabbitmq-kolla-config
+            items:
+              - key: kolla-config
+                path: config.json

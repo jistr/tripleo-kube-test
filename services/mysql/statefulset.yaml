@@ -13,6 +13,9 @@ spec:
       containers:
       - name: mysql 
         image: tripleoupstream/centos-binary-mariadb 
+        env:
+        - name: KOLLA_CONFIG_STRATEGY
+          value: COPY_ALWAYS
         ports:
         - containerPort: 3306
           name: mysql 

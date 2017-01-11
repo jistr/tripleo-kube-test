@@ -1,0 +1,19 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+spec:
+  serviceName: "rabbitmq"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: rabbitmq
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: rabbitmq
+        image: index.docker.io/tripleoupstream/centos-binary-rabbitmq:latest
+        ports:
+        - containerPort: 5672
+          name: rabbitmq

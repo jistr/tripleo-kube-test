@@ -23,6 +23,8 @@ spec:
           volumeMounts:
             - name: rabbitmq-kolla-config
               mountPath: /var/lib/kolla/config_files
+            - name: rabbitmq-pvc
+              mountPath: /var/lib/rabbitmq
       volumes:
         - name: rabbitmq-kolla-config
           configMap:
@@ -30,3 +32,13 @@ spec:
             items:
               - key: kolla-config
                 path: config.json
+  volumeClaimTemplates:
+    - metadata:
+        name: rabbitmq-pvc
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "slow"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

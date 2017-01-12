@@ -1,44 +1,51 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: mysql 
+  name: mysql
 spec:
   serviceName: "mysql"
   replicas: 2
   template:
     metadata:
       labels:
-        app: mysql 
+        app: mysql
     spec:
       containers:
-      - name: mysql 
-        image: tripleoupstream/centos-binary-mariadb 
+      - name: mysql
+        image: tripleoupstream/centos-binary-mariadb
         env:
         - name: KOLLA_CONFIG_STRATEGY
           value: COPY_ALWAYS
         ports:
         - containerPort: 3306
-          name: mysql 
+          name: mysql
         volumeMounts:
-        - name: kolla-config 
+        - name: kolla-config
           mountPath: /var/lib/kolla/config_files/
-        - name: mysql-config 
+        - name: mysql-config
           mountPath: /etc/mysql/
-        - name: mysql-persistent-storage 
+        - name: mysql-pvc
           mountPath: /var/lib/mysql
       volumes:
-        - name: mysql-persistent-storage
-          persistentVolumeClaim:
-            claimName: mysql-pv-claim
         - name: kolla-config
           configMap:
             name: mariadb-kolla-config
             items:
             - key: kolla-config
               path: config.json
-        - name: mysql-config 
+        - name: mysql-config
           configMap:
             name: mariadb-kolla-config
             items:
-            - key: my-cnf 
+            - key: my-cnf
               path: my.cnf
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-pvc
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "slow"
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

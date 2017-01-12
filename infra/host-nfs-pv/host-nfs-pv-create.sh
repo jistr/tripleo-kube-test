@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# to create run: ./infra/host-nfs-pv/host-nfs-pv-create.sh
+# to delete run: KUBECTL_ACTION=delete ./infra/host-nfs-pv/host-nfs-pv-create.sh
+
 set -euxo pipefail
 
 DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)

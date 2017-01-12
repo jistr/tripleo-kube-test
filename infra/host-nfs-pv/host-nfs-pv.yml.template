@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: host-nfs
+  name: host-nfs-__EXPORT_NUM__
   annotations:
     volume.beta.kubernetes.io/storage-class: "slow"
 spec:
@@ -11,5 +11,5 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle
   nfs:
-    path: /export/kubernetes-pv
+    path: /export/kubernetes-pv-__EXPORT_NUM__
     server: 192.168.121.1

@@ -13,7 +13,7 @@ for EXPORT_NUM in $(seq 0 9); do
     if ! grep /export/kubernetes-pv-$EXPORT_NUM /etc/exports; then
         echo "/export/kubernetes-pv-$EXPORT_NUM *(rw,sync,all_squash)" | sudo tee -a /etc/exports.d/kubernetes-pv.exports
     fi
+    sudo chown nfsnobody:nfsnobody /export/kubernetes-pv-$EXPORT_NUM
 done
 
-sudo chown nfsnobody:nfsnobody /export/kubernetes-pv
 sudo exportfs -rav

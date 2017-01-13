@@ -5,9 +5,9 @@ data:
         "command": "/usr/bin/mysqld_safe",
         "config_files": []
     }
-  my-cnf: |
-    [client-server]
-    !includedir /etc/my.cnf.d
+  server-cnf: |
+    [mysqld]
+    pid-file=/var/lib/mysql/mariadb.pid
 kind: ConfigMap
 metadata:
   name: mariadb-kolla-config

@@ -4,7 +4,7 @@ metadata:
   name: mysql
 spec:
   serviceName: "mysql"
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -16,6 +16,10 @@ spec:
         env:
         - name: KOLLA_CONFIG_STRATEGY
           value: COPY_ALWAYS
+        - name: KOLLA_KUBERNETES
+          value: ""
+        - name: DB_ROOT_PASSWORD
+          value: weakpassword
         ports:
         - containerPort: 3306
           name: mysql
@@ -23,7 +27,7 @@ spec:
         - name: kolla-config
           mountPath: /var/lib/kolla/config_files/
         - name: mysql-config
-          mountPath: /etc/mysql/
+          mountPath: /etc/my.cnf.d
         - name: mysql-pvc
           mountPath: /var/lib/mysql
       volumes:
@@ -37,8 +41,8 @@ spec:
           configMap:
             name: mariadb-kolla-config
             items:
-            - key: my-cnf
-              path: my.cnf
+            - key: server-cnf
+              path: server.cnf
   volumeClaimTemplates:
     - metadata:
         name: mysql-pvc

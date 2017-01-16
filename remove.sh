@@ -18,12 +18,19 @@ delete_rabbitmq() {
   kubectl delete configmap rabbitmq-kolla-config || true
 }
 
+delete_all_pvc() {
+  kubectl get pvc -o name | xargs -n1 kubectl delete || true
+}
+
 case "${1:-all}" in
   mysql)
     SERVICES="delete_mysql"
   ;;
   rabbitmq)
     SERVICES="delete_rabbitmq"
+  ;;
+  all_pvc)
+    SERVICES="delete_all_pvc"
   ;;
   *)
   ;;

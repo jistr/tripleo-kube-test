@@ -3,7 +3,7 @@
 
 set -euxo pipefail
 
-SERVICES="create_mysql create_rabbitmq"
+SERVICES="create_mysql create_rabbitmq create_glance"  
 
 create_mysql() {
   kubectl create -f services/mysql/configmap.yaml
@@ -17,7 +17,17 @@ create_rabbitmq() {
   kubectl create -f services/rabbitmq/statefulset.yaml
 }
 
+create_glance() {
+  kubectl create -f services/glance/pvc.yaml
+  kubectl create -f services/glance/configmap.yaml
+  kubectl create -f services/glance/service.yaml
+  kubectl create -f services/glance/deployment.yaml #-f services/glance/bootstrap-job.yaml
+}
+
 case "${1:-all}" in
+  glance)
+    SERVICES="create_glance"
+  ;;
   mysql)
     SERVICES="create_mysql"
   ;;

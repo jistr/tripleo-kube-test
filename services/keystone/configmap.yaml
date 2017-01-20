@@ -24,7 +24,7 @@ data:
             "source": "/var/lib/kolla/config_files/httpd-keystone-main.conf"
           },
           {
-            "dest": "/etc/httpd/conf/10-keystone-admin.conf",
+            "dest": "/etc/httpd/conf.d/10-keystone-admin.conf",
             "owner": "root",
             "perm": "0644",
             "source": "/var/lib/kolla/config_files/httpd-keystone-admin.conf"

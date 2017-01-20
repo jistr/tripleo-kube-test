@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: glance-api-bootstrap
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        #- image: tripleoupstream/centos-binary-mariadb
+        #  name: create-glance-db
+        #  command: ['mysql', '-uroot', '--password=weakpassword', '-hmysql', "-e create database glance;"]
+        - image: tripleoupstream/centos-binary-glance-api
+          name: glance-sync-db
+          command: ['glance-manage', '--config-file', '/etc/glance/glance-api.conf', 'db_sync']
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+            - name: glance-api-config
+              mountPath: /etc/glance/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: glance-api-kolla-config
+            items:
+            - key: kolla-config
+              path: config.json
+        - name: glance-api-config
+          configMap:
+            name: glance-api-kolla-config
+            items:
+            - key: glance-api-conf
+              path: glance-api.conf

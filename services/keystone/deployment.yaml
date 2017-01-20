@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: keystone
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: keystone
+    spec:
+      containers:
+        - name: keystone
+          image: tripleoupstream/centos-binary-keystone
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+            - name: KOLLA_KUBERNETES
+              value: ""
+          ports:
+            - containerPort: 5000
+              name: keystone
+            - containerPort: 35357
+              name: keystone-admin
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: keystone-kolla-config

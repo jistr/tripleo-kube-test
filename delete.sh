@@ -12,6 +12,14 @@ delete_glance() {
   kubectl delete configmap glance-api-kolla-config || true
 }
 
+delete_keystone() {
+  kubectl delete deployment keystone || true
+  kubectl delete job keystone-bootstrap || true
+  kubectl delete service keystone || true
+  kubectl delete service keystone-admin || true
+  kubectl delete configmap keystone-kolla-config || true
+}
+
 delete_mysql() {
   kubectl delete statefulset mysql || true
   kubectl delete job mysql-bootstrap || true
@@ -32,6 +40,9 @@ delete_all_pvc() {
 case "${1:-all}" in
   glance)
     SERVICES="delete_glance"
+  ;;
+  keystone)
+    SERVICES="delete_keystone"
   ;;
   mysql)
     SERVICES="delete_mysql"

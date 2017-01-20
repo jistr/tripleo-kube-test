@@ -3,7 +3,7 @@
 
 set -euxo pipefail
 
-SERVICES="create_mysql create_rabbitmq create_glance"  
+SERVICES="create_mysql create_rabbitmq create_glance create_keystone"
 
 create_mysql() {
   kubectl create -f services/mysql/configmap.yaml
@@ -24,9 +24,19 @@ create_glance() {
   kubectl create -f services/glance/deployment.yaml #-f services/glance/bootstrap-job.yaml
 }
 
+create_keystone() {
+  kubectl create -f services/keystone/configmap.yaml
+  kubectl create -f services/keystone/service.yaml
+  kubectl create -f services/keystone/service-admin.yaml
+  kubectl create -f services/keystone/deployment.yaml #-f services/keystone/bootstrap-job.yaml
+}
+
 case "${1:-all}" in
   glance)
     SERVICES="create_glance"
+  ;;
+  keystone)
+    SERVICES="create_keystone"
   ;;
   mysql)
     SERVICES="create_mysql"

@@ -7,6 +7,7 @@ SERVICES="delete_glance delete_keystone delete_mysql delete_rabbitmq delete_all_
 
 delete_glance() {
   kubectl delete deployment glance-api || true
+  kubectl delete job glance-api-createdb || true
   kubectl delete job glance-api-bootstrap || true
   kubectl delete service glance-api || true
   kubectl delete configmap glance-api-kolla-config || true

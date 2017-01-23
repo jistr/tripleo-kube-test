@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: keystone-db-sync
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: tripleoupstream/centos-binary-keystone
+          name: keystone-db-sync
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+            - name: KOLLA_BOOTSTRAP
+              value: ''
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files
+            - name: keystone-fernet
+              mountPath: /etc/keystone/fernet-keys
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: keystone-kolla-config
+        - name: keystone-fernet
+          persistentVolumeClaim:
+            claimName: keystone-fernet

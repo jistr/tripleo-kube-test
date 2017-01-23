@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: keystone-bootstrap
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: tripleoupstream/centos-binary-keystone
+          name: bootstrap
+          command:
+            - kolla_keystone_bootstrap
+            - admin                      # user
+            - weakpassword               # password
+            - admin                      # project
+            - admin                      # role
+            - ''                         # admin ep
+            - ''                         # internal ep
+            - ''                         # public ep
+            - RegionOne                  # region
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files
+            - name: keystone-fernet
+              mountPath: /etc/keystone/fernet-keys
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: keystone-kolla-config
+        - name: keystone-fernet
+          persistentVolumeClaim:
+            claimName: keystone-fernet

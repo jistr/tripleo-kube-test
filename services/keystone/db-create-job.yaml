@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: keystone-db-create
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      containers:
+        - image: tripleoupstream/centos-binary-mariadb
+          name: keystone-db-create
+          command:
+            - mysql
+            - -h
+            - mysql
+            - -u
+            - root
+            - --password=weakpassword
+            - -e
+            - create database keystone;

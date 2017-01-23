@@ -13,12 +13,16 @@ delete_glance() {
 }
 
 delete_keystone() {
-  kubectl delete deployment keystone || true
+  kubectl delete job keystone-db-create || true
+  kubectl delete job keystone-db-sync || true
+  kubectl delete job keystone-fernet-bootstrap || true
   kubectl delete job keystone-bootstrap || true
+  kubectl delete deployment keystone || true
   kubectl delete service keystone || true
   kubectl delete service keystone-admin || true
   kubectl delete configmap keystone-kolla-config || true
   kubectl delete pvc keystone-fernet || true
+  kubectl exec -ti mysql-0 -- mysql -h mysql -u root --password=weakpassword -e "drop database keystone;" || true
 }
 
 delete_mysql() {

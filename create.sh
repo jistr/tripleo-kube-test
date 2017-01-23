@@ -3,7 +3,28 @@
 
 set -euxo pipefail
 
-SERVICES="create_mysql create_rabbitmq create_glance create_keystone"
+SERVICES="create_mysql create_rabbitmq create_glance"
+
+wait_for_job() {
+    SLEEP=5
+    JOB_NAME="$1"
+    TIMEOUT="${2:-60}"  # approximate
+
+    TRY=0
+    MAX_TRIES=$(( $TIMEOUT / $SLEEP ))
+    while [ $TRY -lt $MAX_TRIES ]; do
+        TRY=$(( $TRY + 1 ))
+
+        if kubectl get jobs -o=jsonpath='{.items[?(@.status.succeeded)].metadata.name}' | grep "\<$JOB_NAME\>"; then
+            return 0
+        fi
+
+        sleep $SLEEP
+    done
+
+    echo "Timed out."
+    exit 1
+}
 
 create_mysql() {
   kubectl create -f services/mysql/configmap.yaml
@@ -29,7 +50,14 @@ create_keystone() {
   kubectl create -f services/keystone/configmap.yaml
   kubectl create -f services/keystone/service.yaml
   kubectl create -f services/keystone/service-admin.yaml
-  kubectl create -f services/keystone/deployment.yaml #-f services/keystone/bootstrap-job.yaml
+  kubectl create -f services/keystone/db-create-job.yaml
+  wait_for_job keystone-db-create
+  kubectl create -f services/keystone/db-sync-job.yaml
+  kubectl create -f services/keystone/fernet-bootstrap-job.yaml
+  wait_for_job keystone-db-sync
+  wait_for_job keystone-db-sync
+  kubectl create -f services/keystone/bootstrap-job.yaml
+  kubectl create -f services/keystone/deployment.yaml
 }
 
 case "${1:-all}" in

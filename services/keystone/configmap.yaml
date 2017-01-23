@@ -6,7 +6,6 @@ metadata:
   labels:
     service: keystone
 data:
-#        "command": "/usr/bin/keystone --config-file /usr/share/keystone/keystone-dist.conf --config-file /etc/keystone/keystone.conf",
   config.json: |
     {
         "command": "/usr/sbin/httpd -DFOREGROUND",
@@ -34,7 +33,7 @@ data:
   keystone.conf: |
     [DEFAULT]
     bind_host = 0.0.0.0
-    sql_connection=mysql://mysql:3306/
+    sql_connection=mysql+pymysql://root:weakpassword@mysql:3306/keystone
   httpd.conf: |
     Listen *:5000
     Listen *:35357

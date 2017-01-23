@@ -9,6 +9,8 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
+    - ReadOnlyMany
+    - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
   nfs:
     path: /export/kubernetes-pv-__EXPORT_NUM__

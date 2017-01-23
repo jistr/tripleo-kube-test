@@ -3,7 +3,7 @@
 
 set -euxo pipefail
 
-SERVICES="delete_glance delete_mysql delete_rabbitmq delete_all_pvc"
+SERVICES="delete_glance delete_keystone delete_mysql delete_rabbitmq delete_all_pvc"
 
 delete_glance() {
   kubectl delete deployment glance-api || true

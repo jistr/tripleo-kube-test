@@ -25,6 +25,7 @@ create_glance() {
 }
 
 create_keystone() {
+  kubectl create -f services/keystone/fernet-pvc.yaml
   kubectl create -f services/keystone/configmap.yaml
   kubectl create -f services/keystone/service.yaml
   kubectl create -f services/keystone/service-admin.yaml

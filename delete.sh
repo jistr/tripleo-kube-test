@@ -18,6 +18,7 @@ delete_keystone() {
   kubectl delete service keystone || true
   kubectl delete service keystone-admin || true
   kubectl delete configmap keystone-kolla-config || true
+  kubectl delete pvc keystone-fernet || true
 }
 
 delete_mysql() {

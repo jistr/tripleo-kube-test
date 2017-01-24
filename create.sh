@@ -51,7 +51,15 @@ create_keystone() {
   kubectl create -f services/keystone/configmap.yaml
   kubectl create -f services/keystone/service.yaml
   kubectl create -f services/keystone/service-admin.yaml
-  kubectl create -f services/keystone/deployment.yaml #-f services/keystone/bootstrap-job.yaml
+  kubectl create -f services/keystone/db-create-job.yaml
+  wait_for_job keystone-db-create
+  kubectl create -f services/keystone/db-sync-job.yaml
+  kubectl create -f services/keystone/fernet-bootstrap-job.yaml
+  wait_for_job keystone-db-sync
+  wait_for_job keystone-fernet-bootstrap
+  kubectl create -f services/keystone/bootstrap-job.yaml
+  wait_for_job keystone-bootstrap
+  kubectl create -f services/keystone/deployment.yaml
 }
 
 case "${1:-all}" in

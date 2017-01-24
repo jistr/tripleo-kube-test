@@ -3,12 +3,12 @@
 
 set -euxo pipefail
 
-SERVICES="create_mysql create_rabbitmq create_glance"
+SERVICES="create_mysql create_rabbitmq create_glance create_keystone"
 
 wait_for_job() {
     SLEEP=5
     JOB_NAME="$1"
-    TIMEOUT="${2:-60}"  # approximate
+    TIMEOUT="${2:-120}"  # approximate
 
     TRY=0
     MAX_TRIES=$(( $TIMEOUT / $SLEEP ))
@@ -30,6 +30,7 @@ create_mysql() {
   kubectl create -f services/mysql/configmap.yaml
   kubectl create -f services/mysql/service.yaml
   kubectl create -f services/mysql/statefulset.yaml -f services/mysql/bootstrap-job.yaml
+  wait_for_job mysql-bootstrap
 }
 
 create_rabbitmq() {
@@ -55,7 +56,7 @@ create_keystone() {
   kubectl create -f services/keystone/db-sync-job.yaml
   kubectl create -f services/keystone/fernet-bootstrap-job.yaml
   wait_for_job keystone-db-sync
-  wait_for_job keystone-db-sync
+  wait_for_job keystone-fernet-bootstrap
   kubectl create -f services/keystone/bootstrap-job.yaml
   kubectl create -f services/keystone/deployment.yaml
 }

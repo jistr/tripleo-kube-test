@@ -17,6 +17,12 @@ data:
             "source": "/var/lib/kolla/config_files/httpd.conf"
           },
           {
+            "dest": "/etc/keystone/keystone.conf",
+            "owner": "keystone",
+            "perm": "0644",
+            "source": "/var/lib/kolla/config_files/keystone.conf"
+          },
+          {
             "dest": "/etc/httpd/conf.d/10-keystone-main.conf",
             "owner": "root",
             "perm": "0644",
@@ -34,6 +40,8 @@ data:
     [DEFAULT]
     bind_host = 0.0.0.0
     sql_connection=mysql+pymysql://root:weakpassword@mysql:3306/keystone
+    [token]
+    provider=fernet
   httpd.conf: |
     Listen *:5000
     Listen *:35357

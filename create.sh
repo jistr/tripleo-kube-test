@@ -29,8 +29,10 @@ wait_for_job() {
 create_mysql() {
   kubectl create -f services/mysql/configmap.yaml
   kubectl create -f services/mysql/service.yaml
-  kubectl create -f services/mysql/statefulset.yaml -f services/mysql/bootstrap-job.yaml
+  kubectl create -f services/mysql/bootstrap-pvc.yaml
+  kubectl create -f services/mysql/bootstrap-job.yaml
   wait_for_job mysql-bootstrap
+  kubectl create -f services/mysql/statefulset.yaml
 }
 
 create_rabbitmq() {

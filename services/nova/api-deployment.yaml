@@ -21,6 +21,11 @@ spec:
           volumeMounts:
             - name: kolla-config
               mountPath: /var/lib/kolla/config_files/
+          securityContext:
+            # seems to be needed otherwise nova-api fails to run
+            # `sudo nova-rootwrap /etc/nova/rootwrap.conf iptables-save -c`
+            # and fails to start up
+            privileged: true
       volumes:
         - name: kolla-config
           configMap:

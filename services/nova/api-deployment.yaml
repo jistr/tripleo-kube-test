@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nova-api
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nova-api
+    spec:
+      containers:
+        - name: nova-api
+          image: tripleoupstream/centos-binary-nova-api
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          ports:
+            - containerPort: 8774
+              name: nova-api
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: nova-kolla-config

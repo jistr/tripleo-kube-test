@@ -3,8 +3,6 @@
 
 set -euxo pipefail
 
-SERVICES="delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_all_pvc"
-
 delete_glance() {
   kubectl delete deployment glance-api || true
   kubectl delete job glance-api-createdb || true
@@ -35,6 +33,16 @@ delete_mariadb() {
   kubectl delete configmap mariadb-kolla-config || true
 }
 
+delete_nova() {
+  kubectl delete job nova-db-create || true
+  kubectl delete job nova-db-sync || true
+  kubectl delete deployment nova-api || true
+  kubectl delete service nova-api || true
+  kubectl delete configmap nova-kolla-config || true
+  kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database nova;" || true
+  kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database nova_api;" || true
+}
+
 delete_rabbitmq() {
   kubectl delete statefulset rabbitmq || true
   kubectl delete service rabbitmq || true
@@ -55,13 +63,21 @@ case "${1:-all}" in
   mariadb)
     SERVICES="delete_mariadb"
   ;;
+  nova)
+    SERVICES="delete_nova"
+  ;;
   rabbitmq)
     SERVICES="delete_rabbitmq"
   ;;
   all_pvc)
     SERVICES="delete_all_pvc"
   ;;
+  all)
+    SERVICES="delete_nova delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_all_pvc"
+  ;;
   *)
+      echo "Unrecognized service $1."
+      exit 1
   ;;
 esac
 

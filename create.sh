@@ -3,8 +3,6 @@
 
 set -euxo pipefail
 
-SERVICES="create_mariadb create_rabbitmq create_keystone create_glance"
-
 wait_for_job() {
     SLEEP=5
     JOB_NAME="$1"
@@ -70,6 +68,18 @@ create_keystone() {
   kubectl create -f services/keystone/deployment.yaml
 }
 
+create_nova() {
+  kubectl create -f services/nova/configmap.yaml
+  kubectl create -f services/nova/db-create-job.yaml
+  wait_for_job nova-db-create
+  kubectl create -f services/nova/db-sync-job.yaml
+  wait_for_job nova-db-sync
+
+  # api
+  kubectl create -f services/nova/api-service.yaml
+  kubectl create -f services/nova/api-deployment.yaml
+}
+
 case "${1:-all}" in
   glance)
     SERVICES="create_glance"
@@ -80,10 +90,18 @@ case "${1:-all}" in
   mariadb)
     SERVICES="create_mariadb"
   ;;
+  nova)
+    SERVICES="create_nova"
+  ;;
   rabbitmq)
     SERVICES="create_rabbitmq"
   ;;
+  all)
+    SERVICES="create_mariadb create_rabbitmq create_keystone create_glance create_nova"
+  ;;
   *)
+      echo "Unrecognized service $1."
+      exit 1
   ;;
 esac
 

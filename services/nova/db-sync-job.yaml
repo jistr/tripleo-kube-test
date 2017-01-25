@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nova-db-sync
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: tripleoupstream/centos-binary-nova-api
+          name: nova-db-sync
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+            - name: KOLLA_BOOTSTRAP
+              value: ''
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: nova-kolla-config

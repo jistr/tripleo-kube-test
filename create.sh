@@ -3,7 +3,7 @@
 
 set -euxo pipefail
 
-SERVICES="create_mariadb create_rabbitmq create_glance create_keystone"
+SERVICES="create_mariadb create_rabbitmq create_keystone create_glance"
 
 wait_for_job() {
     SLEEP=5
@@ -50,6 +50,8 @@ create_glance() {
   wait_for_job glance-api-createdb
   kubectl create -f services/glance/db_sync.yaml
   wait_for_job glance-api-bootstrap
+  kubectl create -f services/glance/keystone-job.yaml
+  wait_for_job glance-api-keystone
 }
 
 create_keystone() {

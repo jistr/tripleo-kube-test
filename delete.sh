@@ -9,8 +9,10 @@ delete_glance() {
   kubectl delete deployment glance-api || true
   kubectl delete job glance-api-createdb || true
   kubectl delete job glance-api-bootstrap || true
+  kubectl delete job glance-api-keystone || true
   kubectl delete service glance-api || true
   kubectl delete configmap glance-api-kolla-config || true
+  kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database glance;" || true
 }
 
 delete_keystone() {

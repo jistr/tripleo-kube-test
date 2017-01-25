@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: glance-api-keystone
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: tripleoupstream/centos-binary-glance-api
+          name: glance-api-keystone-service
+          command: ['openstack', 'service', 'create', '--enable', '--name', 'glance', 'image']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+        - image: tripleoupstream/centos-binary-glance-api
+          name: glance-api-keystone-internal-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'glance', 'internal', 'http://glance-api:9292/v2']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+        - image: tripleoupstream/centos-binary-glance-api
+          name: glance-api-keystone-public-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'glance', 'public', 'http://glance-api:9292/v2']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+        - image: tripleoupstream/centos-binary-glance-api
+          name: glance-api-keystone-admin-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'glance', 'admin', 'http://glance-api:9292/v2']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: glance-api-kolla-config
+            items:
+            - key: kolla-config
+              path: config.json

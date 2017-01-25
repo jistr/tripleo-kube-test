@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: mysql-pvc-mysql-0
+  name: mariadb-pvc-mariadb-0
   annotations:
     volume.beta.kubernetes.io/storage-class: "slow"
 spec:

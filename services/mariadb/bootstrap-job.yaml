@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: mysql-bootstrap
+  name: mariadb-bootstrap
 spec:
   template:
     spec:
@@ -12,10 +12,10 @@ spec:
           volumeMounts:
             - name: kolla-config
               mountPath: /var/lib/kolla/config_files/
-            - name: mysql-config
+            - name: mariadb-config
               mountPath: /etc/my.cnf.d
             - mountPath: /var/lib/mysql
-              name: mysql-pvc
+              name: mariadb-pvc
           env:
             - name: KOLLA_KUBERNETES
               value: ""
@@ -32,12 +32,12 @@ spec:
             items:
             - key: kolla-config
               path: config.json
-        - name: mysql-config
+        - name: mariadb-config
           configMap:
             name: mariadb-kolla-config
             items:
             - key: server-cnf
               path: server.cnf
-        - name: mysql-pvc
+        - name: mariadb-pvc
           persistentVolumeClaim:
-            claimName: mysql-pvc-mysql-0
+            claimName: mariadb-pvc-mariadb-0

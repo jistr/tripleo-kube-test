@@ -9,7 +9,7 @@ spec:
       containers:
         #- image: tripleoupstream/centos-binary-mariadb
         #  name: create-glance-db
-        #  command: ['mysql', '-uroot', '--password=weakpassword', '-hmysql', "-e create database glance;"]
+        #  command: ['mysql', '-uroot', '--password=weakpassword', '-hmariadb', "-e create database glance;"]
         - image: tripleoupstream/centos-binary-glance-api
           name: glance-sync-db
           command: ['glance-manage', '--config-file', '/etc/glance/glance-api.conf', 'db_sync']

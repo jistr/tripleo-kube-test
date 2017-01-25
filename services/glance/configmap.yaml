@@ -8,7 +8,7 @@ data:
   glance-api-conf: |
     [DEFAULT]
     bind_host = 0.0.0.0
-    sql_connection=mysql+pymysql://root:weakpassword@mysql/glance
+    sql_connection=mysql+pymysql://root:weakpassword@mariadb/glance
 kind: ConfigMap
 metadata:
   name: glance-api-kolla-config

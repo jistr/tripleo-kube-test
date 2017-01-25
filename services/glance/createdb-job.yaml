@@ -9,4 +9,4 @@ spec:
       containers:
         - image: tripleoupstream/centos-binary-mariadb
           name: create-glance-db
-          command: ['mysql', '-uroot', '--password=weakpassword', '-hmysql', "-e create database glance;"]
+          command: ['mysql', '-uroot', '--password=weakpassword', '-hmariadb', "-e create database glance;"]

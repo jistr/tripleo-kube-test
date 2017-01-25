@@ -39,7 +39,7 @@ data:
   keystone.conf: |
     [DEFAULT]
     bind_host = 0.0.0.0
-    sql_connection=mysql+pymysql://root:weakpassword@mysql:3306/keystone
+    sql_connection=mysql+pymysql://root:weakpassword@mariadb:3306/keystone
     [token]
     provider=fernet
   httpd.conf: |

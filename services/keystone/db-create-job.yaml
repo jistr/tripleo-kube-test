@@ -13,7 +13,7 @@ spec:
           command:
             - mysql
             - -h
-            - mysql
+            - mariadb
             - -u
             - root
             - --password=weakpassword

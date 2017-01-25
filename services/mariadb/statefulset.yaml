@@ -1,17 +1,17 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: mysql
+  name: mariadb
 spec:
-  serviceName: "mysql"
+  serviceName: "mariadb"
   replicas: 1
   template:
     metadata:
       labels:
-        app: mysql
+        app: mariadb
     spec:
       containers:
-      - name: mysql
+      - name: mariadb
         image: tripleoupstream/centos-binary-mariadb
         env:
         - name: KOLLA_CONFIG_STRATEGY
@@ -22,13 +22,13 @@ spec:
           value: weakpassword
         ports:
         - containerPort: 3306
-          name: mysql
+          name: mariadb
         volumeMounts:
         - name: kolla-config
           mountPath: /var/lib/kolla/config_files/
-        - name: mysql-config
+        - name: mariadb-config
           mountPath: /etc/my.cnf.d
-        - name: mysql-pvc
+        - name: mariadb-pvc
           mountPath: /var/lib/mysql
       volumes:
         - name: kolla-config
@@ -37,7 +37,7 @@ spec:
             items:
             - key: kolla-config
               path: config.json
-        - name: mysql-config
+        - name: mariadb-config
           configMap:
             name: mariadb-kolla-config
             items:
@@ -45,7 +45,7 @@ spec:
               path: server.cnf
   volumeClaimTemplates:
     - metadata:
-        name: mysql-pvc
+        name: mariadb-pvc
         annotations:
           volume.beta.kubernetes.io/storage-class: "slow"
       spec:

@@ -3,7 +3,7 @@
 
 set -euxo pipefail
 
-SERVICES="create_mysql create_rabbitmq create_glance create_keystone"
+SERVICES="create_mariadb create_rabbitmq create_glance create_keystone"
 
 wait_for_job() {
     SLEEP=5
@@ -26,13 +26,13 @@ wait_for_job() {
     exit 1
 }
 
-create_mysql() {
-  kubectl create -f services/mysql/configmap.yaml
-  kubectl create -f services/mysql/service.yaml
-  kubectl create -f services/mysql/bootstrap-pvc.yaml
-  kubectl create -f services/mysql/bootstrap-job.yaml
-  wait_for_job mysql-bootstrap
-  kubectl create -f services/mysql/statefulset.yaml
+create_mariadb() {
+  kubectl create -f services/mariadb/configmap.yaml
+  kubectl create -f services/mariadb/service.yaml
+  kubectl create -f services/mariadb/bootstrap-pvc.yaml
+  kubectl create -f services/mariadb/bootstrap-job.yaml
+  wait_for_job mariadb-bootstrap
+  kubectl create -f services/mariadb/statefulset.yaml
 }
 
 create_rabbitmq() {
@@ -75,8 +75,8 @@ case "${1:-all}" in
   keystone)
     SERVICES="create_keystone"
   ;;
-  mysql)
-    SERVICES="create_mysql"
+  mariadb)
+    SERVICES="create_mariadb"
   ;;
   rabbitmq)
     SERVICES="create_rabbitmq"

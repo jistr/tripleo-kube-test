@@ -3,7 +3,7 @@
 
 set -euxo pipefail
 
-SERVICES="delete_glance delete_keystone delete_mysql delete_rabbitmq delete_all_pvc"
+SERVICES="delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_all_pvc"
 
 delete_glance() {
   kubectl delete deployment glance-api || true
@@ -23,13 +23,13 @@ delete_keystone() {
   kubectl delete service keystone-admin || true
   kubectl delete configmap keystone-kolla-config || true
   kubectl delete pvc keystone-fernet || true
-  kubectl exec -ti mysql-0 -- mysql -h mysql -u root --password=weakpassword -e "drop database keystone;" || true
+  kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database keystone;" || true
 }
 
-delete_mysql() {
-  kubectl delete statefulset mysql || true
-  kubectl delete job mysql-bootstrap || true
-  kubectl delete service mysql || true
+delete_mariadb() {
+  kubectl delete statefulset mariadb || true
+  kubectl delete job mariadb-bootstrap || true
+  kubectl delete service mariadb || true
   kubectl delete configmap mariadb-kolla-config || true
 }
 
@@ -50,8 +50,8 @@ case "${1:-all}" in
   keystone)
     SERVICES="delete_keystone"
   ;;
-  mysql)
-    SERVICES="delete_mysql"
+  mariadb)
+    SERVICES="delete_mariadb"
   ;;
   rabbitmq)
     SERVICES="delete_rabbitmq"

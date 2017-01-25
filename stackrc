@@ -1,0 +1,8 @@
+export OS_IDENTITY_API_VERSION=3
+KEYSTONE_AUTH_IP=`kubectl get service keystone -o=jsonpath='{.spec.clusterIP}'`
+echo "Keystone service IP: $KEYSTONE_AUTH_IP"
+export OS_AUTH_URL=http://$KEYSTONE_AUTH_IP:5000/v3
+export OS_DEFAULT_DOMAIN=default
+export OS_USERNAME=admin
+export OS_PASSWORD=weakpassword
+export OS_PROJECT_NAME=admin

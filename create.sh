@@ -43,7 +43,11 @@ create_glance() {
   kubectl create -f services/glance/pvc.yaml
   kubectl create -f services/glance/configmap.yaml
   kubectl create -f services/glance/service.yaml
-  kubectl create -f services/glance/deployment.yaml #-f services/glance/bootstrap-job.yaml
+  kubectl create -f services/glance/deployment.yaml
+  kubectl create -f services/glance/createdb-job.yaml
+  wait_for_job glance-api-createdb
+  kubectl create -f services/glance/db_sync.yaml
+  wait_for_job glance-api-bootstrap
 }
 
 create_keystone() {

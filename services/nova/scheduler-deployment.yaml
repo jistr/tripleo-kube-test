@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nova-scheduler
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nova-scheduler
+    spec:
+      containers:
+        - name: nova-scheduler
+          image: tripleoupstream/centos-binary-nova-scheduler
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: nova-scheduler-kolla-config

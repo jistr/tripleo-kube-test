@@ -1,14 +1,15 @@
-apiVersion: v1
+schedulerVersion: v1
 kind: ConfigMap
 metadata:
-  name: nova-api-kolla-config
+  name: nova-scheduler-kolla-config
   namespace: default
   labels:
-    service: nova-api
+    service: nova-scheduler
 data:
+        # "command": "nova-scheduler",
   config.json: |
     {
-        "command": "nova-api",
+        "command": "sleep 3600",
         "config_files": [
           {
             "dest": "/etc/nova/nova.conf",
@@ -22,14 +23,6 @@ data:
     [DEFAULT]
     bind_host = 0.0.0.0
     rabbit_host = rabbitmq
-    use_neutron = True
-
-    # This probably needs to be changed to non-null, but with the
-    # default i'm getting errors when nova tries to run
-    # 'sudo nova-rootwrap /etc/nova/rootwrap.conf iptables-save -c'
-    # l3_lib = nova.network.l3.NullL3
-    # firewall_driver = nova.virt.firewall.NoopFirewallDriver
-    # linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
     [database]
     connection=mysql+pymysql://root:weakpassword@mariadb:3306/nova
     [api_database]

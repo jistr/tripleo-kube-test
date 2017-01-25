@@ -36,9 +36,16 @@ delete_mariadb() {
 delete_nova() {
   kubectl delete job nova-db-create || true
   kubectl delete job nova-db-sync || true
+
+  # scheduler
+  kubectl delete deployment nova-scheduler || true
+  kubectl delete configmap nova-scheduler-kolla-config || true
+
+  # api
   kubectl delete deployment nova-api || true
   kubectl delete service nova-api || true
   kubectl delete configmap nova-api-kolla-config || true
+
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database nova;" || true
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database nova_api;" || true
 }

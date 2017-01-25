@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nova-kolla-config
+  name: nova-api-kolla-config
   namespace: default
   labels:
     service: nova-api

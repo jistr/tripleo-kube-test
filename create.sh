@@ -69,13 +69,13 @@ create_keystone() {
 }
 
 create_nova() {
-  kubectl create -f services/nova/configmap.yaml
   kubectl create -f services/nova/db-create-job.yaml
   wait_for_job nova-db-create
   kubectl create -f services/nova/db-sync-job.yaml
   wait_for_job nova-db-sync
 
   # api
+  kubectl create -f services/nova/api-configmap.yaml
   kubectl create -f services/nova/api-service.yaml
   kubectl create -f services/nova/api-deployment.yaml
 }

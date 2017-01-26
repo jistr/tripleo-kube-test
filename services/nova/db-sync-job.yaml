@@ -4,6 +4,25 @@ metadata:
   name: nova-db-sync
 spec:
   template:
+    metadata:
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+            "name": "nova-db-create",
+            "image": "tripleoupstream/centos-binary-mariadb",
+            "imagePullPolicy": "Always",
+            "command": [
+              "mysql",
+              "-h",
+              "mariadb",
+              "-u",
+              "root",
+              "--password=weakpassword",
+              "-e",
+              "create database nova; create database nova_api;"
+            ]
+          }
+        ]'
     spec:
       restartPolicy: OnFailure
       containers:

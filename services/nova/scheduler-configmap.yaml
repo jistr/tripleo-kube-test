@@ -28,7 +28,7 @@ data:
     [api_database]
     connection=mysql+pymysql://root:weakpassword@mariadb:3306/nova_api
     [keystone_authtoken]
-    auth_host = keystone
+    auth_host = keystone-admin
     auth_port = 35357
     auth_protocol = http
     admin_tenant_name = admin

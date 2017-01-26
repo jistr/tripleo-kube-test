@@ -1,0 +1,89 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nova-api-keystone
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: tripleoupstream/centos-binary-nova-api
+          name: nova-api-keystone-service
+          command: ['openstack', 'service', 'create', '--enable', '--name', 'nova', 'compute']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+        - image: tripleoupstream/centos-binary-nova-api
+          name: nova-api-keystone-internal-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'nova', 'internal', 'http://nova-api:8774/v2.1']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+        - image: tripleoupstream/centos-binary-nova-api
+          name: nova-api-keystone-public-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'nova', 'public', 'http://nova-api:8774/v2.1']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+        - image: tripleoupstream/centos-binary-nova-api
+          name: nova-api-keystone-admin-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'nova', 'admin', 'http://nova-api:8774/v2.1']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: nova-api-kolla-config

@@ -86,6 +86,9 @@ create_nova() {
   # scheduler
   kubectl create -f services/nova/scheduler-configmap.yaml
   kubectl create -f services/nova/scheduler-deployment.yaml
+
+  kubectl create -f services/nova/keystone-job.yaml
+  wait_for_job nova-api-keystone
 }
 
 case "${1:-all}" in

@@ -36,6 +36,7 @@ delete_mariadb() {
 delete_nova() {
   kubectl delete job nova-db-create || true
   kubectl delete job nova-db-sync || true
+  kubectl delete job nova-keystone || true
 
   # scheduler
   kubectl delete deployment nova-scheduler || true

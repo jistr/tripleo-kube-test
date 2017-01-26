@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nova-conductor
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nova-conductor
+    spec:
+      containers:
+        - name: nova-conductor
+          image: tripleoupstream/centos-binary-nova-conductor
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: nova-conductor-kolla-config

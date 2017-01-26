@@ -40,6 +40,10 @@ delete_nova() {
   # scheduler
   kubectl delete deployment nova-scheduler || true
   kubectl delete configmap nova-scheduler-kolla-config || true
+  
+  # scheduler
+  kubectl delete deployment nova-conductor || true
+  kubectl delete configmap nova-conductor-kolla-config || true
 
   # api
   kubectl delete deployment nova-api || true

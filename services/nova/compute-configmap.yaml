@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nova-compute-kolla-config
+  namespace: default
+  labels:
+    service: nova-compute
+data:
+  config.json: |
+    {
+        "command": "nova-compute",
+        "config_files": [
+          {
+            "dest": "/etc/nova/nova.conf",
+            "owner": "root",
+            "perm": "0644",
+            "source": "/var/lib/kolla/config_files/nova.conf"
+          }
+        ]
+    }
+  nova.conf: |
+    [DEFAULT]
+    bind_host = 0.0.0.0
+    transport_url=rabbit://guest:guest@rabbitmq:5672/?ssl=0
+    [database]
+    connection=mysql+pymysql://root:weakpassword@mariadb:3306/nova
+    [api_database]
+    connection=mysql+pymysql://root:weakpassword@mariadb:3306/nova_api
+    [libvirt]
+    connection_uri=qemu+tcp://127.0.0.1/system
+    [keystone_authtoken]
+    auth_host = keystone-admin
+    auth_port = 35357
+    auth_protocol = http
+    admin_tenant_name = admin
+    admin_user = admin
+    admin_password = weakpassword

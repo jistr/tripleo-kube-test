@@ -1,0 +1,99 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nova-compute
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nova-compute
+    spec:
+      #hostNetwork: True
+      hostPID: True
+      containers:
+        - name: libvirt 
+          image: tripleoupstream/centos-binary-nova-libvirt
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: libvirt-kolla-config
+              mountPath: /var/lib/kolla/config_files/
+            - mountPath: /var/lib/libvirt
+              name: nova-libvirt-persistent-storage
+            - mountPath: /etc/localtime
+              name: etc-localtime
+            - mountPath: /lib/modules
+              name: lib-modules
+            - mountPath: /var/run
+              name: run
+            - mountPath: /dev
+              name: dev
+            - mountPath: /sys/fs/cgroup
+              name: sys-fs-cgroup
+            - mountPath: /nova
+              name: nova-config
+            - mountPath: /var/log/kolla
+              name: kolla-logs
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+        - name: compute 
+          image: tripleoupstream/centos-binary-nova-compute
+          securityContext:
+            runAsUser: 0 
+            privileged: true
+          volumeMounts:
+            - name: nova-compute-kolla-config
+              mountPath: /var/lib/kolla/config_files/
+            - mountPath: /var/lib/nova
+              name: nova-compute-persistent-storage
+            - mountPath: /etc/localtime
+              name: etc-localtime
+            - mountPath: /lib/modules
+              name: lib-modules
+            - mountPath: /var/run
+              name: run
+            - mountPath: /dev
+              name: dev
+            - mountPath: /sys/fs/cgroup
+              name: sys-fs-cgroup
+            - mountPath: /nova
+              name: nova-config
+            - mountPath: /var/log/kolla
+              name: kolla-logs
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+      volumes:
+        - name: nova-compute-persistent-storage
+          hostPath:
+            path: /var/lib/nova
+        - name: nova-libvirt-persistent-storage
+          hostPath:
+            path: /var/lib/libvirt
+        - name: etc-localtime
+          hostPath:
+            path: /etc/localtime
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: run
+          hostPath:
+            path: /var/run
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: sys-fs-cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+        - name: nova-config
+          emptyDir: {}
+        - name: kolla-logs
+          emptyDir: {}
+        - name: nova-compute-kolla-config
+          configMap:
+            name: nova-compute-kolla-config
+        - name: libvirt-kolla-config
+          configMap:
+            name: libvirt-kolla-config

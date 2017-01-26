@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: libvirt-kolla-config
+  namespace: default
+  labels:
+    service: nova-compute
+data:
+  config.json: |
+    {
+        "command": "/usr/sbin/libvirtd --listen",
+        "config_files": [
+          {
+            "dest": "/etc/libvirt/libvirtd.conf",
+            "owner": "root",
+            "perm": "0644",
+            "source": "/var/lib/kolla/config_files/libvirt.conf"
+          },
+          {
+            "source": "/var/lib/kolla/config_files/qemu.conf",
+            "dest": "/etc/libvirt/qemu.conf",
+            "owner": "root",
+            "perm": "0644"
+          }
+        ]
+    }
+  qemu.conf: |
+    stdio_handler = "file"
+  libvirt.conf: |
+    listen_tcp = 1
+    auth_tcp = "none"
+    ca_file = ""
+    log_level = 3
+    log_outputs = "3:file:/var/log/kolla/libvirt/libvirtd.log"
+    # We can use localhost because the container runs within the
+    # same nova-compute pod
+    listen_addr = "127.0.0.1"

@@ -6,7 +6,7 @@ set -euxo pipefail
 wait_for_job() {
     SLEEP=5
     JOB_NAME="$1"
-    TIMEOUT="${2:-120}"  # approximate
+    TIMEOUT="${2:-180}"  # approximate
 
     TRY=0
     MAX_TRIES=$(( $TIMEOUT / $SLEEP ))

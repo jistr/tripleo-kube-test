@@ -6,10 +6,9 @@ metadata:
   labels:
     service: nova-scheduler
 data:
-        # "command": "nova-scheduler",
   config.json: |
     {
-        "command": "sleep 3600",
+        "command": "nova-scheduler",
         "config_files": [
           {
             "dest": "/etc/nova/nova.conf",
@@ -22,7 +21,7 @@ data:
   nova.conf: |
     [DEFAULT]
     bind_host = 0.0.0.0
-    rabbit_host = rabbitmq
+    transport_url=rabbit://guest:guest@rabbitmq:5672/?ssl=0
     [database]
     connection=mysql+pymysql://root:weakpassword@mariadb:3306/nova
     [api_database]

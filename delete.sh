@@ -5,11 +5,11 @@ set -euxo pipefail
 
 delete_glance() {
   kubectl delete deployment glance-api || true
-  kubectl delete job glance-api-createdb || true
-  kubectl delete job glance-api-bootstrap || true
+  kubectl delete job glance-db-sync || true
   kubectl delete job glance-api-keystone || true
   kubectl delete service glance-api || true
   kubectl delete configmap glance-api-kolla-config || true
+  kubectl delete pvc glance-api-pvc || true
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database glance;" || true
 }
 
@@ -39,7 +39,7 @@ delete_nova() {
   # scheduler
   kubectl delete deployment nova-scheduler || true
   kubectl delete configmap nova-scheduler-kolla-config || true
-  
+
   # scheduler
   kubectl delete deployment nova-conductor || true
   kubectl delete configmap nova-conductor-kolla-config || true

@@ -27,9 +27,6 @@ wait_for_job() {
 create_mariadb() {
   kubectl create -f services/mariadb/configmap.yaml
   kubectl create -f services/mariadb/service.yaml
-  kubectl create -f services/mariadb/bootstrap-pvc.yaml
-  kubectl create -f services/mariadb/bootstrap-job.yaml
-  wait_for_job mariadb-bootstrap
   kubectl create -f services/mariadb/statefulset.yaml
 }
 
@@ -78,7 +75,7 @@ create_nova() {
   # api
   kubectl create -f services/nova/api-service.yaml
   kubectl create -f services/nova/api-deployment.yaml
-  
+
   # scheduler
   kubectl create -f services/nova/conductor-configmap.yaml
   kubectl create -f services/nova/conductor-deployment.yaml

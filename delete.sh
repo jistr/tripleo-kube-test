@@ -14,7 +14,6 @@ delete_glance() {
 }
 
 delete_keystone() {
-  kubectl delete job keystone-db-create || true
   kubectl delete job keystone-db-sync || true
   kubectl delete job keystone-fernet-bootstrap || true
   kubectl delete job keystone-bootstrap || true
@@ -28,7 +27,6 @@ delete_keystone() {
 
 delete_mariadb() {
   kubectl delete statefulset mariadb || true
-  kubectl delete job mariadb-bootstrap || true
   kubectl delete service mariadb || true
   kubectl delete configmap mariadb-kolla-config || true
 }

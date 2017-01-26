@@ -4,6 +4,27 @@ metadata:
   name: keystone-db-sync
 spec:
   template:
+    metadata:
+      labels:
+        app: keystone
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+            "name": "keystone-db-create",
+            "image": "tripleoupstream/centos-binary-mariadb",
+            "imagePullPolicy": "Always",
+            "command": [
+              "mysql",
+              "-h",
+              "mariadb",
+              "-u",
+              "root",
+              "--password=weakpassword",
+              "-e",
+              "create database keystone;"
+            ]
+          }
+        ]'
     spec:
       restartPolicy: OnFailure
       containers:

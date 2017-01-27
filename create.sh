@@ -64,13 +64,18 @@ create_nova() {
   kubectl create -f services/nova/api-service.yaml
   kubectl create -f services/nova/api-deployment.yaml
 
-  # scheduler
+  # conductor 
   kubectl create -f services/nova/conductor-configmap.yaml
   kubectl create -f services/nova/conductor-deployment.yaml
 
   # scheduler
   kubectl create -f services/nova/scheduler-configmap.yaml
   kubectl create -f services/nova/scheduler-deployment.yaml
+  
+  # compute
+  kubectl create -f services/nova/libvirt-configmap.yaml
+  kubectl create -f services/nova/compute-configmap.yaml
+  kubectl create -f services/nova/compute-deployment.yaml
 
   kubectl create -f services/nova/keystone-job.yaml
 }

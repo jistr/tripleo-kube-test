@@ -35,6 +35,11 @@ delete_nova() {
   kubectl delete job nova-db-sync || true
   kubectl delete job nova-api-keystone || true
 
+  # compute 
+  kubectl delete deployment nova-compute || true
+  kubectl delete configmap libvirt-kolla-config || true
+  kubectl delete configmap nova-compute-kolla-config || true
+
   # scheduler
   kubectl delete deployment nova-scheduler || true
   kubectl delete configmap nova-scheduler-kolla-config || true

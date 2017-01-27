@@ -35,3 +35,5 @@ data:
     admin_tenant_name = admin
     admin_user = admin
     admin_password = weakpassword
+    [glance]
+    api_servers=http://glance-api:9292

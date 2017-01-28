@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: neutron-api
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: neutron-api
+    spec:
+      containers:
+        - name: neutron-api
+          image: tripleoupstream/centos-binary-neutron-server
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          ports:
+            - containerPort: 9696
+              name: neutron-api
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+          securityContext:
+            # seems to be needed otherwise neutron-api fails to run
+            # `sudo neutron-rootwrap /etc/neutron/rootwrap.conf iptables-save -c`
+            # and fails to start up
+            privileged: true
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: neutron-api-kolla-config

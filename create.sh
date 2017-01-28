@@ -80,6 +80,15 @@ create_nova() {
   kubectl create -f services/nova/keystone-job.yaml
 }
 
+create_neutron() {
+  kubectl create -f services/neutron/api-configmap.yaml
+  kubectl create -f services/neutron/db-sync-job.yaml
+  
+  # api
+  kubectl create -f services/neutron/api-service.yaml
+  kubectl create -f services/neutron/api-deployment.yaml
+}
+
 case "${1:-all}" in
   glance)
     SERVICES="create_glance"
@@ -90,6 +99,9 @@ case "${1:-all}" in
   mariadb)
     SERVICES="create_mariadb"
   ;;
+  neutron)
+    SERVICES="create_neutron"
+  ;;
   nova)
     SERVICES="create_nova"
   ;;
@@ -97,7 +109,7 @@ case "${1:-all}" in
     SERVICES="create_rabbitmq"
   ;;
   all)
-    SERVICES="create_mariadb create_rabbitmq create_keystone create_glance create_nova"
+    SERVICES="create_mariadb create_rabbitmq create_keystone create_glance create_neutron create_nova"
   ;;
   *)
       echo "Unrecognized service $1."

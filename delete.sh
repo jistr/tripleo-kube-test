@@ -67,6 +67,18 @@ delete_all_pvc() {
   kubectl get pvc -o name | xargs -n1 kubectl delete || true
 }
 
+delete_neutron() {
+  kubectl delete job neutron-db-sync || true
+  kubectl delete job neutron-api-keystone || true
+  
+  # api
+  kubectl delete deployment neutron-api || true
+  kubectl delete service neutron-api || true
+  kubectl delete configmap neutron-api-kolla-config || true
+  
+  kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database neutron;" || true
+}
+
 case "${1:-all}" in
   glance)
     SERVICES="delete_glance"
@@ -76,6 +88,9 @@ case "${1:-all}" in
   ;;
   mariadb)
     SERVICES="delete_mariadb"
+  ;;
+  neutron)
+    SERVICES="delete_neutron"
   ;;
   nova)
     SERVICES="delete_nova"
@@ -87,7 +102,7 @@ case "${1:-all}" in
     SERVICES="delete_all_pvc"
   ;;
   all)
-    SERVICES="delete_nova delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_all_pvc"
+    SERVICES="delete_nova delete_neutron delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_all_pvc"
   ;;
   *)
       echo "Unrecognized service $1."

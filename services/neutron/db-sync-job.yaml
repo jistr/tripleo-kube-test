@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: neutron-db-sync
+spec:
+  template:
+    metadata:
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+            "name": "neutron-db-create",
+            "image": "tripleoupstream/centos-binary-mariadb",
+            "imagePullPolicy": "Always",
+            "command": [
+              "mysql",
+              "-h",
+              "mariadb",
+              "-u",
+              "root",
+              "--password=weakpassword",
+              "-e",
+              "create database neutron;"
+            ]
+          }
+        ]'
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: tripleoupstream/centos-binary-neutron-server
+          name: neutron-db-sync
+          command: ['neutron-db-manage', '--config-file', '/etc/neutron/neutron.conf', 'upgrade', 'heads']
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: neutron-api-kolla-config

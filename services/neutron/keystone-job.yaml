@@ -1,0 +1,73 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: neutron-api-keystone
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: tripleoupstream/centos-binary-neutron-server
+          name: neutron-api-keystone-service
+          command: ['openstack', 'service', 'create', '--enable', '--name', 'neutron', 'network']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+        - image: tripleoupstream/centos-binary-neutron-server
+          name: neutron-api-keystone-internal-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'neutron', 'internal', 'http://neutron-api:9696']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+        - image: tripleoupstream/centos-binary-neutron-server
+          name: neutron-api-keystone-public-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'neutron', 'public', 'http://neutron-api:9696']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"
+        - image: tripleoupstream/centos-binary-neutron-server
+          name: neutron-api-keystone-admin-endpoint
+          command: ['openstack', 'endpoint', 'create', '--region', 'RegionOne', '--enable', 'neutron', 'admin', 'http://neutron-api:9696']
+          env:
+            - name: OS_IDENTITY_API_VERSION
+              value: "3"
+            - name: OS_AUTH_URL
+              value: "http://keystone:5000/v3"
+            - name: OS_DEFAULT_DOMAIN
+              value: "default"
+            - name: OS_USERNAME
+              value: "admin"
+            - name: OS_PASSWORD
+              value: "weakpassword"
+            - name: OS_PROJECT_NAME
+              value: "admin"

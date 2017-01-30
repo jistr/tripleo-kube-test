@@ -64,14 +64,14 @@ create_nova() {
   kubectl create -f services/nova/api-service.yaml
   kubectl create -f services/nova/api-deployment.yaml
 
-  # conductor 
+  # conductor
   kubectl create -f services/nova/conductor-configmap.yaml
   kubectl create -f services/nova/conductor-deployment.yaml
 
   # scheduler
   kubectl create -f services/nova/scheduler-configmap.yaml
   kubectl create -f services/nova/scheduler-deployment.yaml
-  
+
   # compute
   kubectl create -f services/nova/libvirt-configmap.yaml
   kubectl create -f services/nova/compute-configmap.yaml
@@ -83,10 +83,12 @@ create_nova() {
 create_neutron() {
   kubectl create -f services/neutron/api-configmap.yaml
   kubectl create -f services/neutron/db-sync-job.yaml
-  
+
   # api
   kubectl create -f services/neutron/api-service.yaml
   kubectl create -f services/neutron/api-deployment.yaml
+
+  kubectl create -f services/neutron/keystone-job.yaml
 }
 
 case "${1:-all}" in

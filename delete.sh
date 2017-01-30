@@ -35,7 +35,7 @@ delete_nova() {
   kubectl delete job nova-db-sync || true
   kubectl delete job nova-api-keystone || true
 
-  # compute 
+  # compute
   kubectl delete deployment nova-compute || true
   kubectl delete configmap libvirt-kolla-config || true
   kubectl delete configmap nova-compute-kolla-config || true
@@ -70,12 +70,12 @@ delete_all_pvc() {
 delete_neutron() {
   kubectl delete job neutron-db-sync || true
   kubectl delete job neutron-api-keystone || true
-  
+
   # api
   kubectl delete deployment neutron-api || true
   kubectl delete service neutron-api || true
   kubectl delete configmap neutron-api-kolla-config || true
-  
+
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database neutron;" || true
 }
 

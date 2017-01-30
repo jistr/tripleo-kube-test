@@ -8,7 +8,7 @@ metadata:
 data:
   config.json: |
     {
-        "command": "neutron-api",
+        "command": "/usr/bin/neutron-server --config-file /usr/share/neutron/neutron-dist.conf --config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf",
         "config_files": [
           {
             "dest": "/etc/neutron/neutron.conf",

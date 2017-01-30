@@ -32,7 +32,14 @@ spec:
           volumeMounts:
             - name: kolla-config
               mountPath: /var/lib/kolla/config_files/
+            - name: neutron-conf
+              mountPath: /etc/neutron/neutron.conf
+              subPath: neutron.conf
+              readOnly: true
       volumes:
         - name: kolla-config
+          configMap:
+            name: neutron-api-kolla-config
+        - name: neutron-conf
           configMap:
             name: neutron-api-kolla-config

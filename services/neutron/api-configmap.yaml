@@ -50,7 +50,7 @@ data:
     connection=mysql+pymysql://root:weakpassword@mariadb:3306/neutron
     max_retries=-1
     db_max_retries=-1
-    
+
     [keystone_authtoken]
     auth_host = keystone-admin
     auth_port = 35357

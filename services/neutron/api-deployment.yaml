@@ -9,6 +9,8 @@ spec:
       labels:
         app: neutron-api
     spec:
+      nodeSelector:
+        tripleo/role-generic: "true"
       containers:
         - name: neutron-api
           image: tripleoupstream/centos-binary-neutron-server

@@ -9,6 +9,8 @@ spec:
       labels:
         app: keystone
     spec:
+      nodeSelector:
+        tripleo/role-generic: "true"
       containers:
         - name: keystone
           image: tripleoupstream/centos-binary-keystone

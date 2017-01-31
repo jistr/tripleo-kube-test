@@ -9,6 +9,8 @@ spec:
       labels:
         app: nova-conductor
     spec:
+      nodeSelector:
+        tripleo/role-generic: "true"
       containers:
         - name: nova-conductor
           image: tripleoupstream/centos-binary-nova-conductor

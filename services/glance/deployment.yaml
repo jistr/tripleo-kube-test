@@ -9,6 +9,8 @@ spec:
       labels:
         app: glance-api 
     spec:
+      nodeSelector:
+        tripleo/role-generic: "true"
       containers:
       - name: glance-api 
         image: tripleoupstream/centos-binary-glance-api

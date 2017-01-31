@@ -10,6 +10,8 @@ spec:
       labels:
         service: rabbitmq
     spec:
+      nodeSelector:
+        tripleo/role-generic: "true"
       terminationGracePeriodSeconds: 10
       containers:
         - name: rabbitmq

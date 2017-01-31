@@ -49,6 +49,8 @@ spec:
           }
         ]'
     spec:
+      nodeSelector:
+        tripleo/role-generic: "true"
       containers:
       - name: mariadb
         image: tripleoupstream/centos-binary-mariadb

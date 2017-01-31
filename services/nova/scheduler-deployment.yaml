@@ -9,6 +9,8 @@ spec:
       labels:
         app: nova-scheduler
     spec:
+      nodeSelector:
+        tripleo/role-generic: "true"
       containers:
         - name: nova-scheduler
           image: tripleoupstream/centos-binary-nova-scheduler

@@ -9,10 +9,12 @@ spec:
       labels:
         app: nova-compute
     spec:
+      nodeSelector:
+        tripleo/role-compute: "true"
       #hostNetwork: True
       hostPID: True
       containers:
-        - name: libvirt 
+        - name: libvirt
           image: tripleoupstream/centos-binary-nova-libvirt
           securityContext:
             privileged: true
@@ -38,10 +40,10 @@ spec:
           env:
             - name: KOLLA_CONFIG_STRATEGY
               value: COPY_ALWAYS
-        - name: compute 
+        - name: compute
           image: tripleoupstream/centos-binary-nova-compute
           securityContext:
-            runAsUser: 0 
+            runAsUser: 0
             privileged: true
           volumeMounts:
             - name: nova-compute-kolla-config

@@ -1,9 +1,8 @@
 apiVersion: extensions/v1beta1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: nova-compute
 spec:
-  replicas: 1
   template:
     metadata:
       labels:

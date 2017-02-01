@@ -77,10 +77,18 @@ delete_neutron() {
   kubectl delete configmap neutron-api-kolla-config || true
 
   # ovs-agent
-  kubectl delete configmap neutron-ovs-agent || true
+  kubectl delete configmap neutron-ovs-agent-kolla-config || true
   kubectl delete daemonset neutron-ovs-agent || true
 
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database neutron;" || true
+}
+
+delete_openvswitch() {
+  # kubectl delete configmap openvswitch-vswitchd || true
+  # kubectl delete daemonset openvswitch-vswitchd || true
+
+  kubectl delete configmap openvswitch-db-server-kolla-config || true
+  kubectl delete daemonset openvswitch-db-server || true
 }
 
 case "${1:-all}" in
@@ -99,6 +107,9 @@ case "${1:-all}" in
   nova)
     SERVICES="delete_nova"
   ;;
+  openvswitch)
+    SERVICES="delete_openvswitch"
+  ;;
   rabbitmq)
     SERVICES="delete_rabbitmq"
   ;;
@@ -106,7 +117,7 @@ case "${1:-all}" in
     SERVICES="delete_all_pvc"
   ;;
   all)
-    SERVICES="delete_nova delete_neutron delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_all_pvc"
+    SERVICES="delete_nova delete_neutron delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_openvswitch delete_all_pvc"
   ;;
   *)
       echo "Unrecognized service $1."

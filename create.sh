@@ -95,6 +95,14 @@ create_neutron() {
   kubectl create -f services/neutron/keystone-job.yaml
 }
 
+create_openvswitch() {
+  kubectl create -f services/openvswitch/db-server-configmap.yaml
+  kubectl create -f services/openvswitch/db-server-daemonset.yaml
+
+  # kubectl create -f services/openvswitch/vswitchd-configmap.yaml
+  # kubectl create -f services/openvswitch/vswitchd-daemonset.yaml
+}
+
 case "${1:-all}" in
   glance)
     SERVICES="create_glance"
@@ -111,11 +119,14 @@ case "${1:-all}" in
   nova)
     SERVICES="create_nova"
   ;;
+  openvswitch)
+    SERVICES="create_openvswitch"
+  ;;
   rabbitmq)
     SERVICES="create_rabbitmq"
   ;;
   all)
-    SERVICES="create_mariadb create_rabbitmq create_keystone create_glance create_neutron create_nova"
+    SERVICES="create_mariadb create_rabbitmq create_openvswitch create_keystone create_glance create_neutron create_nova"
   ;;
   *)
       echo "Unrecognized service $1."

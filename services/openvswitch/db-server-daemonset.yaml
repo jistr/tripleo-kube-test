@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: openvswitch-db-server
+spec:
+  template:
+    metadata:
+      labels:
+        app: openvswitch-db-server
+    spec:
+      nodeSelector:
+        tripleo/service-l2-agent: "true"
+      containers:
+        - name: openvswitch-db-server
+          image: tripleoupstream/centos-binary-openvswitch-db-server
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: openvswitch-db-server-kolla-config

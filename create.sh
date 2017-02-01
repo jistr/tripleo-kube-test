@@ -99,8 +99,8 @@ create_openvswitch() {
   kubectl create -f services/openvswitch/db-server-configmap.yaml
   kubectl create -f services/openvswitch/db-server-daemonset.yaml
 
-  # kubectl create -f services/openvswitch/vswitchd-configmap.yaml
-  # kubectl create -f services/openvswitch/vswitchd-daemonset.yaml
+  kubectl create -f services/openvswitch/vswitchd-configmap.yaml
+  kubectl create -f services/openvswitch/vswitchd-daemonset.yaml
 }
 
 case "${1:-all}" in

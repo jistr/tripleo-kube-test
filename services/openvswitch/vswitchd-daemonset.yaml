@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: openvswitch-vswitchd
+spec:
+  template:
+    metadata:
+      labels:
+        app: openvswitch-vswitchd
+    spec:
+      nodeSelector:
+        tripleo/service-l2-agent: "true"
+      hostNetwork: true
+      hostIPC: true
+      containers:
+        - name: openvswitch-vswitchd
+          image: tripleoupstream/centos-binary-openvswitch-vswitchd
+          securityContext:
+            privileged: true
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+            - name: host-lib-modules
+              mountPath: /lib/modules
+            - name: host-run-openvswitch
+              mountPath: /var/run/openvswitch
+            - name: host-dev
+              mountPath: /dev
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: openvswitch-vswitchd-kolla-config
+        - name: host-lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: host-run-openvswitch
+          hostPath:
+            path: /var/run/openvswitch
+        - name: host-dev
+          hostPath:
+            path: /dev

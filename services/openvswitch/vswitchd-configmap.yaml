@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openvswitch-vswitchd-kolla-config
+  namespace: default
+  labels:
+    service: openvswitch-vswitchd
+data:
+  config.json: |
+    {
+        "command": "/usr/sbin/ovs-vswitchd unix:/run/openvswitch/db.sock -vconsole:emer -vsyslog:err -vfile:info --mlockall"
+    }

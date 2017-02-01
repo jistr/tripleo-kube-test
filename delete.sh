@@ -84,8 +84,8 @@ delete_neutron() {
 }
 
 delete_openvswitch() {
-  # kubectl delete configmap openvswitch-vswitchd || true
-  # kubectl delete daemonset openvswitch-vswitchd || true
+  kubectl delete configmap openvswitch-vswitchd-kolla-config || true
+  kubectl delete daemonset openvswitch-vswitchd || true
 
   kubectl delete configmap openvswitch-db-server-kolla-config || true
   kubectl delete daemonset openvswitch-db-server || true

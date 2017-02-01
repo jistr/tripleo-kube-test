@@ -7,6 +7,21 @@ spec:
     metadata:
       labels:
         app: openvswitch-db-server
+      annotations:
+        pod.alpha.kubernetes.io/init-containers: '[
+          {
+             "name": "openvswitch-db-server-bootstrap",
+             "image": "tripleoupstream/centos-binary-openvswitch-db-server",
+             "imagePullPolicy": "Always",
+             "command": ["/usr/bin/ovsdb-tool", "create", "/etc/openvswitch/conf.db"],
+             "volumeMounts": [
+                {
+                   "name": "etc-openvswitch",
+                   "mountPath": "/etc/openvswitch"
+                }
+             ]
+          }
+        ]'
     spec:
       nodeSelector:
         tripleo/service-l2-agent: "true"
@@ -21,7 +36,21 @@ spec:
           volumeMounts:
             - name: kolla-config
               mountPath: /var/lib/kolla/config_files/
+            - name: etc-openvswitch
+              mountPath: /etc/openvswitch
+            - name: host-run-openvswitch
+              mountPath: /var/run/openvswitch
+            - name: host-dev
+              mountPath: /dev
       volumes:
         - name: kolla-config
           configMap:
             name: openvswitch-db-server-kolla-config
+        - name: etc-openvswitch
+          emptyDir: {}
+        - name: host-run-openvswitch
+          hostPath:
+            path: /var/run/openvswitch
+        - name: host-dev
+          hostPath:
+            path: /dev

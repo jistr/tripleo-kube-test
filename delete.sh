@@ -76,6 +76,10 @@ delete_neutron() {
   kubectl delete service neutron-api || true
   kubectl delete configmap neutron-api-kolla-config || true
 
+  # ovs-agent
+  kubectl delete configmap neutron-ovs-agent || true
+  kubectl delete daemonset neutron-ovs-agent || true
+
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database neutron;" || true
 }
 

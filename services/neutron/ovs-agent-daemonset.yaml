@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: neutron-ovs-agent
+spec:
+  template:
+    metadata:
+      labels:
+        app: neutron-ovs-agent
+    spec:
+      nodeSelector:
+        tripleo/service-l2-agent: "true"
+      containers:
+        - name: neutron-ovs-agent
+          image: tripleoupstream/centos-binary-neutron-openvswitch-agent
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files/
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: neutron-ovs-agent-kolla-config

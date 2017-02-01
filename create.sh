@@ -88,6 +88,10 @@ create_neutron() {
   kubectl create -f services/neutron/api-service.yaml
   kubectl create -f services/neutron/api-deployment.yaml
 
+  # ovs-agent
+  kubectl create -f services/neutron/ovs-agent-configmap.yaml
+  kubectl create -f services/neutron/ovs-agent-daemonset.yaml
+
   kubectl create -f services/neutron/keystone-job.yaml
 }
 

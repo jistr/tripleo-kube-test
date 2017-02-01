@@ -8,7 +8,7 @@ metadata:
 data:
   config.json: |
     {
-        "command": "neutron-openvswitch-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini",
+        "command": "neutron-openvswitch-agent --config-file /usr/share/neutron/neutron-dist.conf --config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf",
         "config_files": [
           {
             "dest": "/etc/neutron/neutron.conf",
@@ -81,3 +81,13 @@ data:
 
     [oslo_policy]
     policy_file=/etc/neutron/policy.json
+
+    # ml2
+    [securitygroup]
+    firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+
+    [ovs]
+    # bridge_mappings = physnet1:br-em1
+    # network_vlan_ranges = physnet1:1100:1110
+    integration_bridge = br-int
+    tenant_network_type = vlan

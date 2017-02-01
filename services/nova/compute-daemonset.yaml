@@ -10,8 +10,8 @@ spec:
     spec:
       nodeSelector:
         tripleo/role-compute: "true"
-      #hostNetwork: True
-      hostPID: True
+      hostNetwork: true
+      hostPID: true
       containers:
         - name: libvirt
           image: tripleoupstream/centos-binary-nova-libvirt

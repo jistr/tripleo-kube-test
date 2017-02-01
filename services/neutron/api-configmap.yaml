@@ -82,3 +82,13 @@ data:
 
     [oslo_policy]
     policy_file=/etc/neutron/policy.json
+
+    # ml2
+    [securitygroup]
+    firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+
+    [ovs]
+    # bridge_mappings = physnet1:br-em1
+    # network_vlan_ranges = physnet1:1100:1110
+    integration_bridge = br-int
+    tenant_network_type = vlan

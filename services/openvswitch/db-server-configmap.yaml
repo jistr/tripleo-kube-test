@@ -8,5 +8,5 @@ metadata:
 data:
   config.json: |
     {
-        "command": "start-ovsdb-server 127.0.0.1"
+        "command": "ovsdb-server /etc/openvswitch/conf.db -vconsole:info --remote=punix:/var/run/openvswitch/db.sock --remote=ptcp:6640:0.0.0.0"
     }

@@ -15,13 +15,30 @@ spec:
       containers:
         - name: neutron-ovs-agent
           image: tripleoupstream/centos-binary-neutron-openvswitch-agent
+          securityContext:
+            privileged: true
           env:
             - name: KOLLA_CONFIG_STRATEGY
               value: COPY_ALWAYS
           volumeMounts:
             - name: kolla-config
               mountPath: /var/lib/kolla/config_files/
+            - name: host-dev
+              mountPath: /dev
+            - name: host-lib-modules
+              mountPath: /lib/modules
+            - name: host-run-openvswitch
+              mountPath: /var/run
       volumes:
         - name: kolla-config
           configMap:
             name: neutron-ovs-agent-kolla-config
+        - name: host-dev
+          hostPath:
+            path: /dev
+        - name: host-lib-modules
+          hostPath:
+            path: /lib/modules
+        - name: host-run-openvswitch
+          hostPath:
+            path: /var/run

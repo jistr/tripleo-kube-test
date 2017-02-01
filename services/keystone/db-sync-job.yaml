@@ -21,7 +21,7 @@ spec:
               "root",
               "--password=weakpassword",
               "-e",
-              "create database keystone;"
+              "create database if not exists keystone;"
             ]
           }
         ]'

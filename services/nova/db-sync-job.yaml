@@ -19,7 +19,7 @@ spec:
               "root",
               "--password=weakpassword",
               "-e",
-              "create database nova; create database nova_api;"
+              "create database if not exists nova; create database if not exists nova_api;"
             ]
           }
         ]'

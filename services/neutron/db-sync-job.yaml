@@ -19,7 +19,7 @@ spec:
               "root",
               "--password=weakpassword",
               "-e",
-              "create database neutron;"
+              "create database if not exists neutron;"
             ]
           }
         ]'

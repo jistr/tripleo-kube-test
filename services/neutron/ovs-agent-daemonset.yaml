@@ -10,6 +10,8 @@ spec:
     spec:
       nodeSelector:
         tripleo/service-l2-agent: "true"
+      hostNetwork: true
+      hostIPC: true
       containers:
         - name: neutron-ovs-agent
           image: tripleoupstream/centos-binary-neutron-openvswitch-agent

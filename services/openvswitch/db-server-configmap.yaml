@@ -8,5 +8,5 @@ metadata:
 data:
   config.json: |
     {
-        "command": "start-ovsdb-server 0.0.0.0"
+        "command": "start-ovsdb-server 127.0.0.1"
     }

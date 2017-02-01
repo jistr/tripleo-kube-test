@@ -36,7 +36,7 @@ delete_nova() {
   kubectl delete job nova-api-keystone || true
 
   # compute
-  kubectl delete deployment nova-compute || true
+  kubectl delete daemonset nova-compute || true
   kubectl delete configmap libvirt-kolla-config || true
   kubectl delete configmap nova-compute-kolla-config || true
 

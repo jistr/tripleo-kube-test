@@ -75,7 +75,7 @@ create_nova() {
   # compute
   kubectl create -f services/nova/libvirt-configmap.yaml
   kubectl create -f services/nova/compute-configmap.yaml
-  kubectl create -f services/nova/compute-deployment.yaml
+  kubectl create -f services/nova/compute-daemonset.yaml
 
   kubectl create -f services/nova/keystone-job.yaml
 }

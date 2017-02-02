@@ -27,7 +27,6 @@ data:
     core_plugin=ml2
     service_plugins=
     allow_overlapping_ips=True
-    host=undercloud
     notify_nova_on_port_status_changes=True
     notify_nova_on_port_data_changes=True
     global_physnet_mtu=1500

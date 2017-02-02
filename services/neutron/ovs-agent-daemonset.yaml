@@ -10,6 +10,10 @@ spec:
     spec:
       nodeSelector:
         tripleo/service-l2-agent: "true"
+      # currently ClusterFirst doesn't work with hostNetwork
+      # for now we also mount resolv.conf from configmap
+      # https://github.com/kubernetes/kubernetes/issues/17406
+      dnsPolicy: ClusterFirst
       hostNetwork: true
       hostIPC: true
       containers:
@@ -29,6 +33,10 @@ spec:
               mountPath: /lib/modules
             - name: host-run-openvswitch
               mountPath: /var/run
+            - name: resolv-conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
+              readOnly: true
       volumes:
         - name: kolla-config
           configMap:
@@ -42,3 +50,6 @@ spec:
         - name: host-run-openvswitch
           hostPath:
             path: /var/run
+        - name: resolv-conf
+          configMap:
+            name: resolv-conf

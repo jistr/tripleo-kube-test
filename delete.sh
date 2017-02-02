@@ -91,6 +91,10 @@ delete_openvswitch() {
   kubectl delete daemonset openvswitch-db-server || true
 }
 
+delete_resolv_conf() {
+  kubectl delete configmap resolv-conf || true
+}
+
 case "${1:-all}" in
   glance)
     SERVICES="delete_glance"
@@ -117,7 +121,7 @@ case "${1:-all}" in
     SERVICES="delete_all_pvc"
   ;;
   all)
-    SERVICES="delete_nova delete_neutron delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_openvswitch delete_all_pvc"
+    SERVICES="delete_nova delete_neutron delete_glance delete_keystone delete_mariadb delete_rabbitmq delete_openvswitch delete_resolv_conf delete_all_pvc"
   ;;
   *)
       echo "Unrecognized service $1."

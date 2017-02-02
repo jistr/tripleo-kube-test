@@ -103,6 +103,29 @@ create_openvswitch() {
   kubectl create -f services/openvswitch/vswitchd-daemonset.yaml
 }
 
+# currently `dnsPolicy: ClusterFirst` doesn't work with `hostNetwork:
+# true`, which means pods running in hostNetwork mode cannot reach
+# cluster services
+# https://github.com/kubernetes/kubernetes/issues/17406
+# we'll create a custom configmap to inject proper resolv.conf into
+# hostNetwork pods
+create_resolv_conf() {
+  DNS_IP=$(kubectl get service -n kube-system kube-dns -o go-template --template '{{.spec.clusterIP}}')
+  DNS_POD=$(kubectl get pod -n kube-system | grep ^kube-dns | awk '{ print $1; }')
+  DOMAIN=$(kubectl get pod -n kube-system -o json $DNS_POD | grep '"--domain=' | sed -Ee 's/.*"--domain=(.*)\.".*/\1/')
+  kubectl create -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: resolv-conf
+data:
+  resolv.conf: |
+    search default.svc.$DOMAIN svc.$DOMAIN $DOMAIN
+    nameserver $DNS_IP
+    ndots:5
+EOF
+}
+
 case "${1:-all}" in
   glance)
     SERVICES="create_glance"
@@ -125,8 +148,11 @@ case "${1:-all}" in
   rabbitmq)
     SERVICES="create_rabbitmq"
   ;;
+  resolv_conf)
+    SERVICES="create_resolv_conf"
+  ;;
   all)
-    SERVICES="create_mariadb create_rabbitmq create_openvswitch create_keystone create_glance create_neutron create_nova"
+    SERVICES="create_resolv_conf create_mariadb create_rabbitmq create_openvswitch create_keystone create_glance create_neutron create_nova"
   ;;
   *)
       echo "Unrecognized service $1."

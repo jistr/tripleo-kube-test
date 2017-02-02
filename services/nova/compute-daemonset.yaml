@@ -10,6 +10,10 @@ spec:
     spec:
       nodeSelector:
         tripleo/role-compute: "true"
+      # currently ClusterFirst doesn't work with hostNetwork
+      # for now we also mount resolv.conf from configmap
+      # https://github.com/kubernetes/kubernetes/issues/17406
+      dnsPolicy: ClusterFirst
       hostNetwork: true
       hostPID: true
       containers:
@@ -36,6 +40,10 @@ spec:
               name: nova-config
             - mountPath: /var/log/kolla
               name: kolla-logs
+            - name: resolv-conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
+              readOnly: true
           env:
             - name: KOLLA_CONFIG_STRATEGY
               value: COPY_ALWAYS
@@ -63,6 +71,10 @@ spec:
               name: nova-config
             - mountPath: /var/log/kolla
               name: kolla-logs
+            - name: resolv-conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
+              readOnly: true
           env:
             - name: KOLLA_CONFIG_STRATEGY
               value: COPY_ALWAYS
@@ -98,3 +110,6 @@ spec:
         - name: libvirt-kolla-config
           configMap:
             name: libvirt-kolla-config
+        - name: resolv-conf
+          configMap:
+            name: resolv-conf

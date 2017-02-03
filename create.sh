@@ -92,6 +92,10 @@ create_neutron() {
   kubectl create -f services/neutron/ovs-agent-configmap.yaml
   kubectl create -f services/neutron/ovs-agent-daemonset.yaml
 
+  # dhcp-agent
+  kubectl create -f services/neutron/dhcp-agent-configmap.yaml
+  kubectl create -f services/neutron/dhcp-agent-daemonset.yaml
+
   kubectl create -f services/neutron/keystone-job.yaml
 }
 

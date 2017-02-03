@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: neutron-dhcp-agent
+spec:
+  template:
+    metadata:
+      labels:
+        app: neutron-dhcp-agent
+    spec:
+      nodeSelector:
+        tripleo/role-networker: "true"
+      # currently ClusterFirst doesn't work with hostNetwork
+      # for now we also mount resolv.conf from configmap
+      # https://github.com/kubernetes/kubernetes/issues/17406
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      containers:
+        - name: neutron-dhcp-agent
+          image: tripleoupstream/centos-binary-neutron-dhcp-agent
+          securityContext:
+            privileged: true
+          env:
+            - name: KOLLA_CONFIG_STRATEGY
+              value: COPY_ALWAYS
+          volumeMounts:
+            - name: kolla-config
+              mountPath: /var/lib/kolla/config_files
+            - name: host-run-openvswitch
+              mountPath: /var/run/openvswitch
+            - name: resolv-conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
+              readOnly: true
+            - name: socket-dir
+              mountPath: /var/lib/neutron/kubernetes
+      volumes:
+        - name: kolla-config
+          configMap:
+            name: neutron-dhcp-agent-kolla-config
+        - name: host-run-openvswitch
+          hostPath:
+            path: /var/run/openvswitch
+        - name: resolv-conf
+          configMap:
+            name: resolv-conf
+        - name: socket-dir
+          hostPath:
+            path: /var/lib/neutron/kubernetes

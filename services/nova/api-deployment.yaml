@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nova-api
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:

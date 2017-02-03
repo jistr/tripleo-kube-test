@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: neutron-dhcp-agent
+  name: neutron-metadata-agent
 spec:
   template:
     metadata:
       labels:
-        app: neutron-dhcp-agent
+        app: neutron-metadata-agent
     spec:
       nodeSelector:
         tripleo/role-networker: "true"
@@ -16,8 +16,8 @@ spec:
       dnsPolicy: ClusterFirst
       hostNetwork: true
       containers:
-        - name: neutron-dhcp-agent
-          image: tripleoupstream/centos-binary-neutron-dhcp-agent
+        - name: neutron-metadata-agent
+          image: tripleoupstream/centos-binary-neutron-metadata-agent
           securityContext:
             privileged: true
           env:
@@ -37,7 +37,7 @@ spec:
       volumes:
         - name: kolla-config
           configMap:
-            name: neutron-dhcp-agent-kolla-config
+            name: neutron-metadata-agent-kolla-config
         - name: host-run-openvswitch
           hostPath:
             path: /var/run/openvswitch

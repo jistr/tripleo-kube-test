@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: neutron-metadata-agent-kolla-config
+  namespace: default
+  labels:
+    service: neutron-metadata-agent
+data:
+  config.json: |
+    {
+        "command": "/usr/bin/neutron-metadata-agent --config-file /usr/share/neutron/neutron-dist.conf --config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf",
+        "config_files": [
+          {
+            "dest": "/etc/neutron/neutron.conf",
+            "owner": "neutron",
+            "perm": "0644",
+            "source": "/var/lib/kolla/config_files/neutron.conf"
+          },
+          {
+            "dest": "/etc/neutron/dnsmasq.conf",
+            "owner": "neutron",
+            "perm": "0644",
+            "source": "/var/lib/kolla/config_files/dnsmasq.conf"
+          }
+        ]
+    }
+  neutron.conf: |
+    [DEFAULT]
+    debug = true
+
+    # dhcp agent
+    dnsmasq_config_file = /etc/neutron/dnsmasq.conf
+    enable_isolated_metadata = true
+    force_metadata = true
+    interface_driver = openvswitch
+
+    # dhcp + metadata
+    metadata_proxy_socket = /var/lib/neutron/kolla/metadata_proxy
+
+    # metadata
+    nova_metadata_ip = nova-api
+    nova_metadata_port = 8775
+    nova_metadata_protocol = http
+    # metadata_proxy_shared_secret = weaksecret
+    # metadata_port =
+    metadata_workers = 1
+    cache_url = memory://?default_ttl=5
+    notification_driver = noop
+
+    bind_host = 0.0.0.0
+    rabbit_host = rabbitmq
+
+    auth_strategy=keystone
+    core_plugin=ml2
+    service_plugins=
+    allow_overlapping_ips=True
+    notify_nova_on_port_status_changes=True
+    notify_nova_on_port_data_changes=True
+    global_physnet_mtu=1500
+    api_workers=
+    rpc_workers=
+    dhcp_agents_per_network=2
+    router_distributed=False
+    router_scheduler_driver=neutron.scheduler.l3_agent_scheduler.ChanceScheduler
+    allow_automatic_l3agent_failover=True
+    l3_ha=False
+    max_l3_agents_per_router=3
+    log_dir=/var/log/neutron
+    control_exchange=neutron
+    nova_url=http://nova-api:8774/v2.1
+
+    [agent]
+    root_helper=sudo neutron-rootwrap /etc/neutron/rootwrap.conf
+
+    [database]
+    connection=mysql+pymysql://root:weakpassword@mariadb:3306/neutron
+    max_retries=-1
+    db_max_retries=-1
+
+    [keystone_authtoken]
+    auth_host = keystone-admin
+    auth_port = 35357
+    auth_protocol = http
+    admin_tenant_name = admin
+    admin_user = admin
+    admin_password = weakpassword
+
+    [nova]
+    auth_url=http://keystone-admin:35357/v3
+    auth_type=password
+    password=weakpassword
+    project_domain_id=default
+    project_name=admin
+    tenant_name=admin
+    user_domain_id=default
+    username=admin
+
+    [oslo_concurrency]
+    lock_path=$state_path/lock
+
+    [oslo_messaging_rabbit]
+    rabbit_hosts=rabbitmq
+    rabbit_use_ssl=False
+    heartbeat_timeout_threshold=60
+
+    [oslo_messaging_notifications]
+    driver=noop
+
+    [oslo_middleware]
+    enable_proxy_headers_parsing=True
+
+    [oslo_policy]
+    policy_file=/etc/neutron/policy.json
+
+    # ml2
+    [securitygroup]
+    firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+
+    [ovs]
+    # bridge_mappings = physnet1:br-em1
+    # network_vlan_ranges = physnet1:1100:1110
+    integration_bridge = br-int
+    tenant_network_type = vlan
+  dnsmasq.conf: |
+    log-facility=/var/log/neutron/dnsmasq.log

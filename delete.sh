@@ -80,6 +80,10 @@ delete_neutron() {
   kubectl delete configmap neutron-ovs-agent-kolla-config || true
   kubectl delete daemonset neutron-ovs-agent || true
 
+  # metadata-agent
+  kubectl delete configmap neutron-metadata-agent-kolla-config || true
+  kubectl delete daemonset neutron-metadata-agent || true
+
   # dhcp-agent
   kubectl delete configmap neutron-dhcp-agent-kolla-config || true
   kubectl delete daemonset neutron-dhcp-agent || true

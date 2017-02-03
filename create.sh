@@ -62,6 +62,7 @@ create_nova() {
 
   # api
   kubectl create -f services/nova/api-service.yaml
+  kubectl create -f services/nova/api-metadata-service.yaml
   kubectl create -f services/nova/api-deployment.yaml
 
   # conductor

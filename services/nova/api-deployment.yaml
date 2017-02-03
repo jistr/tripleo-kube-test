@@ -20,6 +20,9 @@ spec:
           ports:
             - containerPort: 8774
               name: nova-api
+            - containerPort: 8775
+              # "must be no more than 15 characters"?
+              name: nova-api-meta
           volumeMounts:
             - name: kolla-config
               mountPath: /var/lib/kolla/config_files/

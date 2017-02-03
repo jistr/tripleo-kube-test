@@ -24,6 +24,10 @@ data:
     rabbit_host = rabbitmq
     use_neutron = True
 
+    enabled_apis=osapi_compute,metadata
+    osapi_compute_workers=1
+    metadata_workers=1
+
     # This probably needs to be changed to non-null, but with the
     # default i'm getting errors when nova tries to run
     # 'sudo nova-rootwrap /etc/nova/rootwrap.conf iptables-save -c'

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nova-api-metadata
+spec:
+  ports:
+    - port: 8775
+  selector:
+    app: nova-api

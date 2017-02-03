@@ -38,7 +38,7 @@ data:
     metadata_proxy_socket = /var/lib/neutron/kolla/metadata_proxy
 
     # metadata
-    nova_metadata_ip = nova-api
+    nova_metadata_ip = nova-api-metadata
     nova_metadata_port = 8775
     nova_metadata_protocol = http
     # metadata_proxy_shared_secret = weaksecret

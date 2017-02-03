@@ -51,6 +51,7 @@ delete_nova() {
   # api
   kubectl delete deployment nova-api || true
   kubectl delete service nova-api || true
+  kubectl delete service nova-api-metadata || true
   kubectl delete configmap nova-api-kolla-config || true
 
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database nova;" || true

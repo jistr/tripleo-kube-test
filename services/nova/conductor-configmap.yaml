@@ -35,3 +35,12 @@ data:
     admin_password = weakpassword
     [glance]
     api_servers=http://glance-api:9292
+    [neutron]
+    url=http://neutron-api:9696
+    auth_url=http://keystone:5000/v3
+    auth_type=v3password
+    project_domain_name=Default
+    project_name = admin
+    username = admin
+    user_domain_name=Default
+    password = weakpassword

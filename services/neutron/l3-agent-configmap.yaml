@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: neutron-api-kolla-config
+  name: neutron-l3-agent-kolla-config
   namespace: default
   labels:
-    service: neutron-api
+    service: neutron-l3-agent
 data:
   config.json: |
     {
-        "command": "/usr/bin/neutron-server --config-file /usr/share/neutron/neutron-dist.conf --config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf",
+        "command": "/usr/bin/neutron-l3-agent --config-file /usr/share/neutron/neutron-dist.conf --config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf",
         "config_files": [
           {
             "dest": "/etc/neutron/neutron.conf",
@@ -20,7 +20,32 @@ data:
     }
   neutron.conf: |
     [DEFAULT]
+    debug = true
     use_stderr = true
+
+    # l3 agent
+    enable_metadata_proxy = True
+    agent_mode = legacy
+
+    # dhcp agent
+    dnsmasq_config_file = /etc/neutron/dnsmasq.conf
+    enable_isolated_metadata = true
+    force_metadata = true
+    interface_driver = openvswitch
+
+    # dhcp + metadata
+    metadata_proxy_socket = /var/lib/neutron/kolla/metadata_proxy
+
+    # metadata
+    nova_metadata_ip = nova-api-metadata
+    nova_metadata_port = 8775
+    nova_metadata_protocol = http
+    # metadata_proxy_shared_secret = weaksecret
+    # metadata_port =
+    metadata_workers = 1
+    cache_url = memory://?default_ttl=5
+    notification_driver = noop
+
     bind_host = 0.0.0.0
     rabbit_host = rabbitmq
 
@@ -84,6 +109,9 @@ data:
     rabbit_use_ssl=False
     heartbeat_timeout_threshold=60
 
+    [oslo_messaging_notifications]
+    driver=noop
+
     [oslo_middleware]
     enable_proxy_headers_parsing=True
 
@@ -96,6 +124,6 @@ data:
 
     [ovs]
     # bridge_mappings = physnet1:br-em1
-    #network_vlan_ranges = physnet1:1100:1110
+    # network_vlan_ranges = physnet1:1100:1110
     integration_bridge = br-int
     tenant_network_type = gre

@@ -89,6 +89,10 @@ delete_neutron() {
   kubectl delete configmap neutron-dhcp-agent-kolla-config || true
   kubectl delete daemonset neutron-dhcp-agent || true
 
+  # l3-agent
+  kubectl delete configmap neutron-l3-agent-kolla-config || true
+  kubectl delete daemonset neutron-l3-agent || true
+
   kubectl exec -ti mariadb-0 -- mysql -h mariadb -u root --password=weakpassword -e "drop database neutron;" || true
 }
 

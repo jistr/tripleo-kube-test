@@ -20,6 +20,8 @@ data:
     }
   neutron.conf: |
     [DEFAULT]
+    use_stderr = true
+
     bind_host = 0.0.0.0
     rabbit_host = rabbitmq
 
@@ -40,6 +42,13 @@ data:
     max_l3_agents_per_router=3
     control_exchange=neutron
     nova_url=http://nova-api:8774/v2.1
+
+    type_drivers=local,flat,gre
+    tenant_network_types=local,flat,gre
+    mechanism_drivers=openvswitch,linuxbridge
+
+    [ml2_type_gre]
+    tunnel_id_ranges =20:100
 
     [agent]
     root_helper=sudo neutron-rootwrap /etc/neutron/rootwrap.conf
@@ -89,4 +98,4 @@ data:
     # bridge_mappings = physnet1:br-em1
     # network_vlan_ranges = physnet1:1100:1110
     integration_bridge = br-int
-    tenant_network_type = vlan
+    tenant_network_type = gre

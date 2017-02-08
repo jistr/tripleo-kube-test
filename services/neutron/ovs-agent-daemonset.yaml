@@ -7,6 +7,29 @@ spec:
     metadata:
       labels:
         app: neutron-ovs-agent
+      annotations:
+        # eventually we'd at least mount the script in,
+        # to prevent so much escaping
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+            "name": "local-conf",
+            "image": "tripleoupstream/centos-binary-neutron-openvswitch-agent",
+            "imagePullPolicy": "Always",
+            "command": ["bash", "-c"],
+            "args": ["
+              DEFAULT_ROUTE_DEV=$(ip r | grep ''^default'' | grep -oE ''dev ([^ ]+)'' | awk ''{ print $2; }'');
+              LOCAL_IP=$(ip a show $DEFAULT_ROUTE_DEV | grep ''^ *inet '' | awk ''{ print $2; }'' | awk -F/ ''{ print $1; }'');
+              cat > /var/lib/neutron/local/local.conf <<EOF\n[ovs]\nlocal_ip=$LOCAL_IP\nEOF\n
+              "
+            ],
+            "volumeMounts": [
+              {
+                "mountPath": "/var/lib/neutron/local",
+                "name": "neutron-local"
+              }
+            ]
+          }
+        ]'
     spec:
       nodeSelector:
         tripleo/service-l2-agent: "true"
@@ -33,6 +56,8 @@ spec:
               mountPath: /lib/modules
             - name: host-run-openvswitch
               mountPath: /var/run
+            - name: neutron-local
+              mountPath: /var/lib/neutron/local
             - name: resolv-conf
               mountPath: /etc/resolv.conf
               subPath: resolv.conf
@@ -53,3 +78,5 @@ spec:
         - name: resolv-conf
           configMap:
             name: resolv-conf
+        - name: neutron-local
+          emptyDir: {}

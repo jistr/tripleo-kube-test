@@ -8,7 +8,7 @@ metadata:
 data:
   config.json: |
     {
-        "command": "neutron-openvswitch-agent --config-file /usr/share/neutron/neutron-dist.conf --config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf",
+        "command": "neutron-openvswitch-agent --config-file /usr/share/neutron/neutron-dist.conf --config-dir /usr/share/neutron/server --config-file /etc/neutron/neutron.conf --config-file /var/lib/neutron/local/local.conf",
         "config_files": [
           {
             "dest": "/etc/neutron/neutron.conf",
@@ -43,12 +43,13 @@ data:
     control_exchange=neutron
     nova_url=http://nova-api:8774/v2.1
 
-    type_drivers=local,flat,gre
-    tenant_network_types=local,flat,gre
-    mechanism_drivers=openvswitch,linuxbridge
+    type_drivers=flat,gre
+    tenant_network_types=gre
+    mechanism_drivers=openvswitch
 
     [ml2_type_gre]
     tunnel_id_ranges =20:100
+    tunnel_types=gre
 
     [agent]
     root_helper=sudo neutron-rootwrap /etc/neutron/rootwrap.conf
@@ -95,7 +96,5 @@ data:
     firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
 
     [ovs]
-    # bridge_mappings = physnet1:br-em1
+    # bridge_mappings = physnet1:br-ex
     # network_vlan_ranges = physnet1:1100:1110
-    integration_bridge = br-int
-    tenant_network_type = gre

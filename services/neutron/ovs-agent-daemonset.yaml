@@ -28,6 +28,21 @@ spec:
                 "name": "neutron-local"
               }
             ]
+          },
+          {
+            "name": "ovs-socket-ownership",
+            "image": "tripleoupstream/centos-binary-neutron-openvswitch-agent",
+            "imagePullPolicy": "Always",
+            "command": ["chown", "neutron:", "/var/run/openvswitch/db.sock"],
+            "securityContext": {
+              "runAsUser": 0
+            },
+            "volumeMounts": [
+              {
+                "mountPath": "/var/run/openvswitch",
+                "name": "host-run-openvswitch"
+              }
+            ]
           }
         ]'
     spec:
@@ -55,7 +70,7 @@ spec:
             - name: host-lib-modules
               mountPath: /lib/modules
             - name: host-run-openvswitch
-              mountPath: /var/run
+              mountPath: /var/run/openvswitch
             - name: neutron-local
               mountPath: /var/lib/neutron/local
             - name: resolv-conf
@@ -74,7 +89,7 @@ spec:
             path: /lib/modules
         - name: host-run-openvswitch
           hostPath:
-            path: /var/run
+            path: /var/run/openvswitch
         - name: resolv-conf
           configMap:
             name: resolv-conf

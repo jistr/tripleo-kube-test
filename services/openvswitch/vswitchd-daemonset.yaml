@@ -11,6 +11,7 @@ spec:
       nodeSelector:
         tripleo/service-l2-agent: "true"
       hostNetwork: true
+      hostPID: true
       hostIPC: true
       containers:
         - name: openvswitch-vswitchd
@@ -25,8 +26,8 @@ spec:
               mountPath: /var/lib/kolla/config_files/
             - name: host-lib-modules
               mountPath: /lib/modules
-            - name: host-run-openvswitch
-              mountPath: /var/run/openvswitch
+            - name: host-run
+              mountPath: /run
             - name: host-dev
               mountPath: /dev
       volumes:
@@ -36,9 +37,9 @@ spec:
         - name: host-lib-modules
           hostPath:
             path: /lib/modules
-        - name: host-run-openvswitch
+        - name: host-run
           hostPath:
-            path: /var/run/openvswitch
+            path: /run
         - name: host-dev
           hostPath:
             path: /dev

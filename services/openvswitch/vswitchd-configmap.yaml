@@ -8,5 +8,5 @@ metadata:
 data:
   config.json: |
     {
-        "command": "/usr/sbin/ovs-vswitchd unix:/var/run/openvswitch/db.sock -vconsole:info --mlockall"
+        "command": "/usr/sbin/ovs-vswitchd unix:/run/openvswitch/db.sock -vconsole:info --mlockall"
     }

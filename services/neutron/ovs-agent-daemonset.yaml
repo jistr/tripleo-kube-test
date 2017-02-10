@@ -33,14 +33,14 @@ spec:
             "name": "ovs-socket-ownership",
             "image": "tripleoupstream/centos-binary-neutron-openvswitch-agent",
             "imagePullPolicy": "Always",
-            "command": ["chown", "neutron:", "/var/run/openvswitch/db.sock"],
+            "command": ["chown", "neutron:", "/run/openvswitch/db.sock"],
             "securityContext": {
               "runAsUser": 0
             },
             "volumeMounts": [
               {
-                "mountPath": "/var/run/openvswitch",
-                "name": "host-run-openvswitch"
+                "mountPath": "/run",
+                "name": "host-run"
               }
             ]
           }
@@ -53,6 +53,7 @@ spec:
       # https://github.com/kubernetes/kubernetes/issues/17406
       dnsPolicy: ClusterFirst
       hostNetwork: true
+      hostPID: true
       hostIPC: true
       containers:
         - name: neutron-ovs-agent
@@ -69,8 +70,10 @@ spec:
               mountPath: /dev
             - name: host-lib-modules
               mountPath: /lib/modules
-            - name: host-run-openvswitch
-              mountPath: /var/run/openvswitch
+            # TODO: mount this as ':shared' so that network namespaces
+            # propagate, no k8s support ATM
+            - name: host-run
+              mountPath: /run
             - name: neutron-local
               mountPath: /var/lib/neutron/local
             - name: resolv-conf
@@ -87,9 +90,9 @@ spec:
         - name: host-lib-modules
           hostPath:
             path: /lib/modules
-        - name: host-run-openvswitch
+        - name: host-run
           hostPath:
-            path: /var/run/openvswitch
+            path: /run
         - name: resolv-conf
           configMap:
             name: resolv-conf

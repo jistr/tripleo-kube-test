@@ -20,6 +20,7 @@ data:
     }
   nova.conf: |
     [DEFAULT]
+    debug = true
     bind_host = 0.0.0.0
     transport_url=rabbit://guest:guest@rabbitmq:5672/?ssl=0
     [database]

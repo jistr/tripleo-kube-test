@@ -26,10 +26,13 @@ spec:
       nodeSelector:
         tripleo/service-l2-agent: "true"
       hostNetwork: true
+      hostPID: true
       hostIPC: true
       containers:
         - name: openvswitch-db-server
           image: tripleoupstream/centos-binary-openvswitch-db-server
+          securityContext:
+            privileged: true
           env:
             - name: KOLLA_CONFIG_STRATEGY
               value: COPY_ALWAYS
@@ -38,8 +41,8 @@ spec:
               mountPath: /var/lib/kolla/config_files/
             - name: etc-openvswitch
               mountPath: /etc/openvswitch
-            - name: host-run-openvswitch
-              mountPath: /var/run/openvswitch
+            - name: host-run
+              mountPath: /run
             - name: host-dev
               mountPath: /dev
       volumes:
@@ -48,9 +51,9 @@ spec:
             name: openvswitch-db-server-kolla-config
         - name: etc-openvswitch
           emptyDir: {}
-        - name: host-run-openvswitch
+        - name: host-run
           hostPath:
-            path: /var/run/openvswitch
+            path: /run
         - name: host-dev
           hostPath:
             path: /dev

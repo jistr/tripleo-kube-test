@@ -20,6 +20,7 @@ data:
     }
   neutron.conf: |
     [DEFAULT]
+    debug = true
     use_stderr = true
 
     bind_host = 0.0.0.0
@@ -49,7 +50,6 @@ data:
 
     [ml2_type_gre]
     tunnel_id_ranges =20:100
-    tunnel_types=gre
 
     [agent]
     root_helper=sudo neutron-rootwrap /etc/neutron/rootwrap.conf
@@ -59,7 +59,6 @@ data:
 
     [database]
     connection=mysql+pymysql://root:weakpassword@mariadb:3306/neutron
-    tunnel_types=gre
     max_retries=-1
     db_max_retries=-1
 
@@ -100,6 +99,6 @@ data:
     firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
 
     [ovs]
-    ovsdb_connection = unix:/var/run/openvswitch/db.sock
+    ovsdb_connection = unix:/run/openvswitch/db.sock
     # bridge_mappings = physnet1:br-ex
     # network_vlan_ranges = physnet1:1100:1110

@@ -126,6 +126,6 @@ data:
     firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
 
     [ovs]
-    ovsdb_connection = unix:/var/run/openvswitch/db.sock
+    ovsdb_connection = unix:/run/openvswitch/db.sock
     # bridge_mappings = physnet1:br-ex
     # network_vlan_ranges = physnet1:1100:1110

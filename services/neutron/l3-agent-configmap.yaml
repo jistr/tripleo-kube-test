@@ -68,16 +68,19 @@ data:
     control_exchange=neutron
     nova_url=http://nova-api:8774/v2.1
 
-    type_drivers=flat,gre
-    tenant_network_types=gre
+    type_drivers=flat,vxlan
+    tenant_network_types=vxlan
     mechanism_drivers=openvswitch
 
     [ml2_type_gre]
     tunnel_id_ranges =20:100
 
+    [ml2_type_vxlan]
+    vni_ranges = 10:1000
+
     [agent]
     root_helper=sudo neutron-rootwrap /etc/neutron/rootwrap.conf
-    tunnel_types=gre
+    tunnel_types=vxlan
     l2_population = true
     arp_responder = true
 

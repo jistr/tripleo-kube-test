@@ -53,6 +53,10 @@ spec:
               mountPath: /run
             - name: host-dev
               mountPath: /dev
+            - name: resolv-conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
+              readOnly: true
       volumes:
         - name: kolla-config
           configMap:
@@ -66,3 +70,6 @@ spec:
         - name: host-dev
           hostPath:
             path: /dev
+        - name: resolv-conf
+          configMap:
+            name: resolv-conf

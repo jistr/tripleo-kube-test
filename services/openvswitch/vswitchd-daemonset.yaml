@@ -7,6 +7,29 @@ spec:
     metadata:
       labels:
         app: openvswitch-vswitchd
+      annotations:
+        pod.alpha.kubernetes.io/init-containers: '[
+          {
+             "name": "openvswitch-vswitchd-bootstrap",
+             "image": "tripleoupstream/centos-binary-openvswitch-vswitchd",
+             "imagePullPolicy": "Always",
+             "command": ["bash", "-c", "modprobe openvswitch && modprobe gre && modprobe vxlan && ovs-vsctl --no-wait show"],
+             "volumeMounts": [
+                {
+                   "name": "host-lib-modules",
+                   "mountPath": "/lib/modules"
+                },
+                {
+                   "name": "host-dev",
+                   "mountPath": "/dev"
+                },
+                {
+                   "name": "host-run",
+                   "mountPath": "/run"
+                }
+             ]
+          }
+        ]'
     spec:
       nodeSelector:
         tripleo/service-l2-agent: "true"

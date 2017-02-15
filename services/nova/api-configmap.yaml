@@ -20,6 +20,8 @@ data:
     }
   nova.conf: |
     [DEFAULT]
+    debug = true
+    use_stderr = true
     bind_host = 0.0.0.0
     rabbit_host = rabbitmq
     use_neutron = True
